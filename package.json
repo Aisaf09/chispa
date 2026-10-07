@@ -1,0 +1,6 @@
+{
+  "name": "chispa-pwa",
+  "private": true,
+  "type": "module",
+  "description": "Chispa en el iPhone: horarios de oración, hábitos, tareas, Tasbih, Qibla y foco. Sin dependencias ni compilación."
+}
