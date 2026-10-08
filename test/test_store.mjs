@@ -13,6 +13,7 @@ check("sin datos la racha es 0", S.racha(e, d("2026-10-02")) === 0);
 for (const f of ["2026-09-29", "2026-09-30", "2026-10-01"]) e.checks[f] = [...todos];
 check("tres días completos terminando ayer: racha 3 (hoy aún incompleto no la rompe)", S.racha(e, d("2026-10-02")) === 3);
 e.checks["2026-10-02"] = [...todos];
+e.habitos_dia["2026-10-02"] = S.CHECKS.map((c) => [...c]);      // hoy con los 5 hábitos de siempre
 check("si hoy también está completo: racha 4", S.racha(e, d("2026-10-02")) === 4);
 e.checks["2026-09-30"] = todos.slice(0, 4);
 check("un día incompleto en medio corta la racha", S.racha(e, d("2026-10-02")) === 2);

@@ -1,6 +1,7 @@
 // Chispa en el iPhone (fase 1: todo local). Sin dependencias ni compilación.
 import * as R from "./rezos.js";
 import * as S from "./store.js";
+import * as A from "./agenda.js";
 
 const E = S.cargar();
 let tab = "hoy";
@@ -84,24 +85,31 @@ const ICONOS = {
   ajustes: '<path d="M4 8h16M4 16h16"/><circle cx="9" cy="8" r="2.2" fill="#000"/><circle cx="15" cy="16" r="2.2" fill="#000"/>',
 };
 const TABS = [["hoy", "Hoy"], ["tareas", "Tareas"], ["fe", "Fe"], ["foco", "Foco"], ["ajustes", "Ajustes"]];
+function descCuando(r, cuando, ahora) {
+  if (r.dias && r.dias.length) return (r.dias.length === 7 ? "cada día" : r.dias.map((i) => A.DIAS[i].slice(0, 3)).join(", ")) + ` ${r.hora}`;
+  return A.etiquetaCuando(cuando, ahora);
+}
 const OK = '<svg viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.8"/></svg>';
 
 // ---------- vistas ----------
 function vistaHoy() {
   const ahora = new Date(), hoy = S.iso(ahora), h = R.horariosDe(ahora, cfg()), prox = R.proximo(ahora, cfg());
-  const rez = new Set(E.rezos[hoy] || []), chk = new Set(E.checks[hoy] || []);
+  const rez = new Set(E.rezos[hoy] || []), chk = new Set(E.checks[hoy] || []), habitos = S.habitosHoy(E, ahora);
+  const proximos = A.ordenar(E.agenda, ahora).filter((p) => p.cuando.getTime() > ahora.getTime()).slice(0, 3);
   const sigRezo = R.proximo(ahora, cfg(), R.REZOS);
   const f0 = ahora.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" });
   const fecha = f0.charAt(0).toUpperCase() + f0.slice(1);
   return `<div class="cab"><div><h1>Hoy</h1><p class="sub">${esc(fecha)}</p></div>
-    <div class="racha"><div class="num">${segmentos(S.progresoDia(E, hoy), 10, 56)}<div><div><b>${S.racha(E)}</b><span>días</span></div></div></div></div></div>
+    <div class="racha"><div class="num">${segmentos(S.progresoDia(E, hoy, ahora), S.totalDia(E, hoy, ahora), 56)}<div><div><b>${S.racha(E)}</b><span>días</span></div></div></div></div></div>
     <div class="card sig"><div class="et">Siguiente</div>
       <div class="sig-nom">${prox ? esc(R.NOMBRES[prox.id]) : "—"}</div>
       <div class="sig-cuenta" data-cuenta="${prox ? prox.cuando.getTime() : 0}"></div>
       <div class="sig-hora">${prox ? hhmm(prox.cuando) : ""}</div></div>
     <div class="chips">${R.REZOS.map((id) => `<button class="chip${rez.has(id) ? " hecho" : ""}${sigRezo && sigRezo.id === id && !rez.has(id) ? " sig2" : ""}" data-a="rezo" data-id="${id}" aria-pressed="${rez.has(id)}">
       <span class="n">${R.NOMBRES[id]}</span><span class="h">${h[id] ? hhmm(h[id]) : "--:--"}</span></button>`).join("")}</div>
-    <h2>Hábitos</h2><div class="card">${S.CHECKS.map(([id, txt]) => `<button class="fila${chk.has(id) ? " hecha" : ""}" data-a="check" data-id="${id}" role="checkbox" aria-checked="${chk.has(id)}">
+    ${proximos.length ? `<h2>Agenda</h2><div class="card">${proximos.map(({ cuando, r }) => `<div class="fila"><span class="tx">${esc(r.texto)}</span>
+      <span class="sub" data-cuenta="${cuando.getTime()}" data-pre="en "></span></div>`).join("")}</div>` : ""}
+    <h2>Hábitos de hoy</h2><div class="card">${habitos.map(([id, txt]) => `<button class="fila${chk.has(id) ? " hecha" : ""}" data-a="check" data-id="${id}" role="checkbox" aria-checked="${chk.has(id)}">
       <span class="chk">${OK}</span><span class="tx">${esc(txt)}</span></button>`).join("")}</div>
     <button class="card foco-mini" data-a="tab" data-id="foco"><div><div class="et">Foco · hoy ${durTxt(E.foco[hoy] || 0)}</div>
       <div class="t" id="mini-timer">${mmss(S.restante(E.timer))}</div></div>
@@ -109,12 +117,18 @@ function vistaHoy() {
 }
 
 function vistaTareas() {
+  const ahora = new Date(), proximos = A.ordenar(E.agenda, ahora);
   const pend = E.tareas.filter((t) => !t.hecha), hechas = E.tareas.filter((t) => t.hecha);
   const fila = (t) => `<div class="fila${t.hecha ? " hecha" : ""}"><button class="fila" style="padding:0;flex:1" data-a="tarea" data-id="${t.id}" role="checkbox" aria-checked="${t.hecha}">
     <span class="chk">${OK}</span><span class="tx">${esc(t.texto)}</span></button><button class="borrar" data-a="tarea-borrar" data-id="${t.id}" aria-label="Borrar">×</button></div>`;
   return `<div class="cab"><div><h1>Tareas</h1><p class="sub">${pend.length} pendiente${pend.length === 1 ? "" : "s"}</p></div></div>
     <form class="form-tarea" data-form="tarea"><input type="text" name="texto" placeholder="Nueva tarea" autocomplete="off" enterkeyhint="done" maxlength="200"><button class="btn pri" type="submit">Añadir</button></form>
     ${pend.length ? `<div class="card">${pend.map(fila).join("")}</div>` : `<p class="vacio">Sin tareas pendientes.</p>`}
+    <h2>Recordatorios</h2>
+    <form class="form-tarea" data-form="recordatorio"><input type="text" name="texto" placeholder="Recuérdame… mañana a las 17:30" autocomplete="off" enterkeyhint="done" maxlength="200"><button class="btn pri" type="submit">Crear</button></form>
+    ${proximos.length ? `<div class="card">${proximos.map(({ cuando, r }) => `<div class="fila"><span class="tx">${esc(r.texto)}<br><span class="sub">${esc(descCuando(r, cuando, ahora))}</span></span>
+      <button class="borrar" data-a="rec-borrar" data-id="${r.id}" aria-label="Borrar">×</button></div>`).join("")}</div>`
+      : `<p class="vacio">Sin recordatorios. Escribe «recuérdame llamar al médico mañana a las 17:30», «todos los días» o «los lunes y jueves».</p>`}
     ${hechas.length ? `<h2>Hechas</h2><div class="card">${hechas.slice(-8).reverse().map(fila).join("")}</div>` : ""}`;
 }
 
@@ -145,7 +159,7 @@ function vistaFoco() {
 function vistaAjustes() {
   const a = E.ajustes, hace = a.gps_ts ? cuenta(Date.now() - a.gps_ts) : "";
   const metodo = `${a.fajr}/${a.isha}`;
-  return `<div class="cab"><div><h1>Ajustes</h1><p class="sub">Chispa · fase 1 (todo en este teléfono)</p></div></div>
+  return `<div class="cab"><div><h1>Ajustes</h1><p class="sub">Chispa · todo en este teléfono</p></div></div>
     <h2>Ubicación</h2><div class="card"><p class="nota">${a.gps ? `Del GPS del iPhone${hace ? `, hace ${hace}` : ""}.` : "Manual."} Lat ${a.lat}, lon ${a.lon}</p>
       <div class="fila-btn" style="margin-top:12px"><button class="btn pri" data-a="gps">Usar la ubicación del iPhone</button></div>
       <form data-form="ubic" style="margin-top:14px"><div class="doble"><div class="campo"><label>Latitud</label><input type="number" name="lat" step="any" value="${a.lat}"></div><div class="campo"><label>Longitud</label><input type="number" name="lon" step="any" value="${a.lon}"></div></div>
@@ -153,6 +167,9 @@ function vistaAjustes() {
     <h2>Cálculo de las oraciones</h2><div class="card"><div class="campo"><label>Método (ángulos de Fajr / Isha)</label><select data-sel="metodo">
         ${[["18/17", "Liga Mundial Musulmana (18° / 17°)"], ["15/15", "ISNA (15° / 15°)"], ["12/12", "UOIF (12° / 12°)"]].map(([v, n]) => `<option value="${v}"${v === metodo ? " selected" : ""}>${n}</option>`).join("")}</select></div>
       <div class="campo" style="margin:0"><label>Asr</label><select data-sel="asr"><option value="standard"${a.asr === "standard" ? " selected" : ""}>Estándar (Shafi'i, Maliki, Hanbali)</option><option value="hanafi"${a.asr === "hanafi" ? " selected" : ""}>Hanafí</option></select></div></div>
+    <h2>Avisos</h2><div class="card"><p class="nota">Los recordatorios suenan con un aviso dentro de la app. Si la app estaba cerrada, al abrirla verás lo que te perdiste en las últimas 24 h.</p>
+      <p class="nota">Para que iOS te avise con la app cerrada hacen falta las notificaciones push (siguiente fase).</p>
+      <div class="fila-btn" style="margin-top:12px"><button class="btn peq" data-a="avisos-permiso">${typeof Notification !== "undefined" && Notification.permission === "granted" ? "Avisos del sistema permitidos" : "Permitir avisos del sistema"}</button></div></div>
     <h2>Instalar en el iPhone</h2><div class="card"><p class="nota">En Safari: botón Compartir → <b>Añadir a pantalla de inicio</b>. Así se abre como una app a pantalla completa y funciona sin conexión.</p>
       <p class="nota">La sincronización con Chispa en Windows y los avisos de oración llegarán en las siguientes fases.</p></div>
     <h2>Datos</h2><div class="card"><div class="fila-btn"><button class="btn peligro" data-a="borrar">Borrar todos los datos de este teléfono</button></div></div>`;
@@ -160,7 +177,16 @@ function vistaAjustes() {
 
 const VISTAS = { hoy: vistaHoy, tareas: vistaTareas, fe: vistaFe, foco: vistaFoco, ajustes: vistaAjustes };
 
+function pintarAlertas() {
+  const c = $("#alertas");
+  if (!c) return;
+  c.innerHTML = E.alertas.slice(0, 3).map((a) => `<div class="alerta" role="alert"><div class="tx"><b>Recordatorio</b><br>${esc(a.texto)}<br><span class="sub">${esc(A.etiquetaCuando(new Date(a.cuando), new Date()))}</span></div>
+    <div class="acc"><button class="btn peq" data-a="alerta-mas" data-id="${a.id}">+10 min</button><button class="btn peq pri" data-a="alerta-ok" data-id="${a.id}">Hecho</button></div></div>`).join("") +
+    (E.alertas.length > 3 ? `<p class="sub" style="text-align:center">+${E.alertas.length - 3} más</p>` : "");
+}
+
 function render() {
+  pintarAlertas();
   $("#vista").innerHTML = VISTAS[tab]();
   $("#tabs").innerHTML = TABS.map(([id, n]) => `<button class="${id === tab ? "act" : ""}" data-a="tab" data-id="${id}" aria-label="${n}"><svg viewBox="0 0 24 24">${ICONOS[id]}</svg>${n}</button>`).join("");
   tick();
@@ -218,8 +244,24 @@ function usarGPS(silencioso = false) {
 }
 
 // ---------- reloj ----------
+let ultimoGuardado = 0;
+function revisarAvisos(ahora) {
+  const nuevos = S.procesarAvisos(E, ahora);
+  if (nuevos) {
+    guardar(); ultimoGuardado = ahora; pintarAlertas();
+    const a = E.alertas[E.alertas.length - 1];
+    navigator.vibrate?.([120, 80, 120]);
+    aviso(`Recordatorio: ${a.texto}`);
+    if (document.hidden && typeof Notification !== "undefined" && Notification.permission === "granted") {
+      navigator.serviceWorker?.ready.then((r) => r.showNotification("Chispa · Recordatorio", { body: a.texto, tag: "chispa-" + a.id })).catch(() => {});
+    }
+    if (tab === "hoy" || tab === "tareas") render();
+  } else if (ahora - ultimoGuardado > 30000) { guardar(); ultimoGuardado = ahora; }
+}
+
 function tick() {
   const ahora = Date.now();
+  revisarAvisos(ahora);
   const fin = S.comprobarFinTimer(E, ahora);
   if (fin) {
     guardar(); aviso(fin === "foco" ? "Bloque de foco terminado: descansa 20 min" : "Descanso terminado: vuelve al foco");
@@ -263,6 +305,13 @@ function accion(a, id) {
     case "tasbih-reset": S.tasbih(E).ciclo = 0; break;
     case "timer-toggle": E.timer.corre ? S.pausarTimer(E) : S.iniciarTimer(E); break;
     case "timer-reset": S.reiniciarTimer(E); break;
+    case "rec-borrar": S.borrarRecordatorio(E, Number(id)); break;
+    case "alerta-ok": S.descartarAviso(E, Number(id)); break;
+    case "alerta-mas": S.posponerAviso(E, Number(id), 10); aviso("Te lo recuerdo en 10 min"); break;
+    case "avisos-permiso":
+      if (typeof Notification === "undefined") return aviso("Este navegador no admite avisos del sistema");
+      Notification.requestPermission().then((p) => { aviso(p === "granted" ? "Avisos del sistema permitidos" : "Avisos no permitidos"); render(); });
+      return;
     case "gps": usarGPS(); return;
     case "brujula": activarBrujula(); return;
     case "borrar":
@@ -284,6 +333,11 @@ document.addEventListener("submit", (ev) => {
   if (f.dataset.form === "tarea") {
     const inp = f.elements.texto;
     if (S.añadirTarea(E, inp.value)) { guardar(); render(); $("[name=texto]")?.focus(); }
+  } else if (f.dataset.form === "recordatorio") {
+    const txt = f.elements.texto.value.trim();
+    const r = S.añadirRecordatorio(E, A.esRecordatorio(txt) ? txt : "recuérdame " + txt);
+    if (!r) return;
+    guardar(); render(); aviso("Recordatorio guardado");
   } else if (f.dataset.form === "ubic") {
     const lat = parseFloat(f.elements.lat.value), lon = parseFloat(f.elements.lon.value);
     if (!(lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180)) return aviso("Latitud (−90 a 90) y longitud (−180 a 180)");

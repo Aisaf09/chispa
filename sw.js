@@ -1,6 +1,6 @@
 // Service worker: deja la app disponible sin conexión (cache de los archivos propios) y se actualiza sola.
-const VERSION = "chispa-v1";
-const ARCHIVOS = ["./", "index.html", "manifest.webmanifest", "css/app.css", "js/app.js", "js/rezos.js", "js/store.js",
+const VERSION = "chispa-v2";
+const ARCHIVOS = ["./", "index.html", "manifest.webmanifest", "css/app.css", "js/app.js", "js/rezos.js", "js/store.js", "js/agenda.js",
                   "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png"];
 
 self.addEventListener("install", (e) => {

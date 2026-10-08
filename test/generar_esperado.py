@@ -11,6 +11,7 @@ import sys
 AQUI = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(AQUI, "..", "..", "isla"))
 import rezos  # noqa: E402
+import chispa_agenda as ag  # noqa: E402
 
 CIUDADES = {"Vilobi": (41.851, 2.708), "Madrid": (40.4168, -3.7038), "Sevilla": (37.3891, -5.9845),
             "Bilbao": (43.263, -2.935), "Barcelona": (41.3851, 2.1734), "Valencia": (39.4699, -0.3763)}
@@ -42,6 +43,36 @@ qib = []
 for nombre, (lat, lon) in {**CIUDADES, "NuevaYork": (40.7, -74.0), "Yakarta": (-6.2, 106.8), "Sidney": (-33.87, 151.2)}.items():
     rumbo, km = rezos.qibla(lat, lon)
     qib.append({"ciudad": nombre, "lat": lat, "lon": lon, "rumbo": rumbo, "km": km, "punto": rezos.punto_cardinal(rumbo)})
+# agenda: los mismos textos y el mismo "ahora" en Python y en JS
+AHORAS = [dt.datetime(2026, 10, 8, 12, 0), dt.datetime(2026, 10, 8, 7, 5), dt.datetime(2026, 12, 31, 23, 30)]
+TEXTOS = ["recuérdame llamar al médico mañana a las 17:30", "r entregar la práctica el viernes a las 9",
+          "recuérdame beber agua todos los días a las 11", "recuérdame ir al gimnasio los lunes y miércoles a las 7:30",
+          "r reunión 15/10 a las 18.00", "r sacar la basura hoy a las 10", "r estudiar redes pasado mañana 20:15",
+          "r comprar pan", "r llamar a casa a las 18", "r llamar a mamá a las 5 de la tarde", "r llamar a mamá el sábado",
+          "recuerda: revisar el correo cada día a las 8", "r cumpleaños 02/01 a las 10", "r examen 31/02 a las 9",
+          "r ver a Ali los martes, jueves y sábados 19:00", "comprar pan", "reunión mañana", "r   ", "r hora a las 25:00"]
+agenda = []
+for ahora in AHORAS:
+    for t in TEXTOS:
+        agenda.append({"ahora": ahora.strftime("%Y-%m-%dT%H:%M:00"), "texto": t, "esperado": ag.parsear(t, ahora)})
+rs = [{"id": 1, "texto": "x", "fecha": "2026-10-08", "hora": "17:30", "dias": []},
+      {"id": 2, "texto": "y", "fecha": None, "hora": "07:30", "dias": [0, 2]},
+      {"id": 3, "texto": "z", "fecha": "2026-10-05", "hora": "08:00", "dias": []},
+      {"id": 4, "texto": "w", "fecha": None, "hora": "12:00", "dias": list(range(7))}]
+orden = []
+for ahora in AHORAS:
+    orden.append({"ahora": ahora.strftime("%Y-%m-%dT%H:%M:00"), "agenda": rs,
+                  "esperado": [{"id": r["id"], "cuando": c.strftime("%Y-%m-%dT%H:%M"), "txt": ag.etiqueta_cuando(c, ahora)}
+                               for c, r in ag.ordenar(rs, ahora)]})
+habitos = []
+for d in range(1, 15):
+    f = dt.date(2026, 10, d)
+    habitos.append({"fecha": f.isoformat(), "esperado": [list(h) for h in ag.habitos_del_dia(f)]})
+ev = [{"start": dt.datetime(2026, 10, 9, 14, 0), "titulo": "Práctica de redes"}]
+habitos.append({"fecha": "2026-10-08", "entregas": [{"start": "2026-10-09T14:00", "titulo": "Práctica de redes"}],
+                "esperado": [list(h) for h in ag.habitos_del_dia(dt.date(2026, 10, 8), ev)]})
 with open(os.path.join(AQUI, "esperado.json"), "w", encoding="utf-8") as f:
-    json.dump({"casos": casos, "sol": sol, "proximo": prox, "qibla": qib}, f, ensure_ascii=False, indent=1)
-print(f"{len(casos)} casos de horarios, {len(sol)} de sol, {len(prox)} de proximo, {len(qib)} de qibla")
+    json.dump({"casos": casos, "sol": sol, "proximo": prox, "qibla": qib, "agenda": agenda, "orden": orden,
+               "habitos": habitos}, f, ensure_ascii=False, indent=1)
+print(f"{len(casos)} casos de horarios, {len(sol)} de sol, {len(prox)} de proximo, {len(qib)} de qibla, "
+      f"{len(agenda)} de agenda, {len(orden)} de orden, {len(habitos)} de habitos")

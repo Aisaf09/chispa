@@ -2273,5 +2273,1179 @@
    "km": 13235.421613402836,
    "punto": "O"
   }
+ ],
+ "agenda": [
+  {
+   "ahora": "2026-10-08T12:00:00",
+   "texto": "recuérdame llamar al médico mañana a las 17:30",
+   "esperado": {
+    "texto": "llamar al médico",
+    "fecha": "2026-10-09",
+    "hora": "17:30",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T12:00:00",
+   "texto": "r entregar la práctica el viernes a las 9",
+   "esperado": {
+    "texto": "entregar la práctica",
+    "fecha": "2026-10-09",
+    "hora": "09:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T12:00:00",
+   "texto": "recuérdame beber agua todos los días a las 11",
+   "esperado": {
+    "texto": "beber agua",
+    "fecha": null,
+    "hora": "11:00",
+    "dias": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   }
+  },
+  {
+   "ahora": "2026-10-08T12:00:00",
+   "texto": "recuérdame ir al gimnasio los lunes y miércoles a las 7:30",
+   "esperado": {
+    "texto": "ir al gimnasio",
+    "fecha": null,
+    "hora": "07:30",
+    "dias": [
+     0,
+     2
+    ]
+   }
+  },
+  {
+   "ahora": "2026-10-08T12:00:00",
+   "texto": "r reunión 15/10 a las 18.00",
+   "esperado": {
+    "texto": "reunión",
+    "fecha": "2026-10-15",
+    "hora": "18:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T12:00:00",
+   "texto": "r sacar la basura hoy a las 10",
+   "esperado": {
+    "texto": "sacar la basura",
+    "fecha": "2026-10-08",
+    "hora": "10:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T12:00:00",
+   "texto": "r estudiar redes pasado mañana 20:15",
+   "esperado": {
+    "texto": "estudiar redes",
+    "fecha": "2026-10-10",
+    "hora": "20:15",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T12:00:00",
+   "texto": "r comprar pan",
+   "esperado": {
+    "texto": "comprar pan",
+    "fecha": "2026-10-09",
+    "hora": "09:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T12:00:00",
+   "texto": "r llamar a casa a las 18",
+   "esperado": {
+    "texto": "llamar a casa",
+    "fecha": "2026-10-08",
+    "hora": "18:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T12:00:00",
+   "texto": "r llamar a mamá a las 5 de la tarde",
+   "esperado": {
+    "texto": "llamar a mamá",
+    "fecha": "2026-10-08",
+    "hora": "17:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T12:00:00",
+   "texto": "r llamar a mamá el sábado",
+   "esperado": {
+    "texto": "llamar a mamá",
+    "fecha": "2026-10-10",
+    "hora": "09:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T12:00:00",
+   "texto": "recuerda: revisar el correo cada día a las 8",
+   "esperado": {
+    "texto": "revisar el correo",
+    "fecha": null,
+    "hora": "08:00",
+    "dias": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   }
+  },
+  {
+   "ahora": "2026-10-08T12:00:00",
+   "texto": "r cumpleaños 02/01 a las 10",
+   "esperado": {
+    "texto": "cumpleaños",
+    "fecha": "2027-01-02",
+    "hora": "10:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T12:00:00",
+   "texto": "r examen 31/02 a las 9",
+   "esperado": {
+    "texto": "examen",
+    "fecha": "2026-10-09",
+    "hora": "09:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T12:00:00",
+   "texto": "r ver a Ali los martes, jueves y sábados 19:00",
+   "esperado": {
+    "texto": "ver a Ali",
+    "fecha": null,
+    "hora": "19:00",
+    "dias": [
+     1,
+     3,
+     5
+    ]
+   }
+  },
+  {
+   "ahora": "2026-10-08T12:00:00",
+   "texto": "comprar pan",
+   "esperado": null
+  },
+  {
+   "ahora": "2026-10-08T12:00:00",
+   "texto": "reunión mañana",
+   "esperado": null
+  },
+  {
+   "ahora": "2026-10-08T12:00:00",
+   "texto": "r   ",
+   "esperado": {
+    "texto": "",
+    "fecha": "2026-10-09",
+    "hora": "09:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T12:00:00",
+   "texto": "r hora a las 25:00",
+   "esperado": {
+    "texto": "hora a las 25:00",
+    "fecha": "2026-10-09",
+    "hora": "09:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T07:05:00",
+   "texto": "recuérdame llamar al médico mañana a las 17:30",
+   "esperado": {
+    "texto": "llamar al médico",
+    "fecha": "2026-10-09",
+    "hora": "17:30",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T07:05:00",
+   "texto": "r entregar la práctica el viernes a las 9",
+   "esperado": {
+    "texto": "entregar la práctica",
+    "fecha": "2026-10-09",
+    "hora": "09:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T07:05:00",
+   "texto": "recuérdame beber agua todos los días a las 11",
+   "esperado": {
+    "texto": "beber agua",
+    "fecha": null,
+    "hora": "11:00",
+    "dias": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   }
+  },
+  {
+   "ahora": "2026-10-08T07:05:00",
+   "texto": "recuérdame ir al gimnasio los lunes y miércoles a las 7:30",
+   "esperado": {
+    "texto": "ir al gimnasio",
+    "fecha": null,
+    "hora": "07:30",
+    "dias": [
+     0,
+     2
+    ]
+   }
+  },
+  {
+   "ahora": "2026-10-08T07:05:00",
+   "texto": "r reunión 15/10 a las 18.00",
+   "esperado": {
+    "texto": "reunión",
+    "fecha": "2026-10-15",
+    "hora": "18:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T07:05:00",
+   "texto": "r sacar la basura hoy a las 10",
+   "esperado": {
+    "texto": "sacar la basura",
+    "fecha": "2026-10-08",
+    "hora": "10:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T07:05:00",
+   "texto": "r estudiar redes pasado mañana 20:15",
+   "esperado": {
+    "texto": "estudiar redes",
+    "fecha": "2026-10-10",
+    "hora": "20:15",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T07:05:00",
+   "texto": "r comprar pan",
+   "esperado": {
+    "texto": "comprar pan",
+    "fecha": "2026-10-08",
+    "hora": "09:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T07:05:00",
+   "texto": "r llamar a casa a las 18",
+   "esperado": {
+    "texto": "llamar a casa",
+    "fecha": "2026-10-08",
+    "hora": "18:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T07:05:00",
+   "texto": "r llamar a mamá a las 5 de la tarde",
+   "esperado": {
+    "texto": "llamar a mamá",
+    "fecha": "2026-10-08",
+    "hora": "17:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T07:05:00",
+   "texto": "r llamar a mamá el sábado",
+   "esperado": {
+    "texto": "llamar a mamá",
+    "fecha": "2026-10-10",
+    "hora": "09:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T07:05:00",
+   "texto": "recuerda: revisar el correo cada día a las 8",
+   "esperado": {
+    "texto": "revisar el correo",
+    "fecha": null,
+    "hora": "08:00",
+    "dias": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   }
+  },
+  {
+   "ahora": "2026-10-08T07:05:00",
+   "texto": "r cumpleaños 02/01 a las 10",
+   "esperado": {
+    "texto": "cumpleaños",
+    "fecha": "2027-01-02",
+    "hora": "10:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T07:05:00",
+   "texto": "r examen 31/02 a las 9",
+   "esperado": {
+    "texto": "examen",
+    "fecha": "2026-10-08",
+    "hora": "09:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T07:05:00",
+   "texto": "r ver a Ali los martes, jueves y sábados 19:00",
+   "esperado": {
+    "texto": "ver a Ali",
+    "fecha": null,
+    "hora": "19:00",
+    "dias": [
+     1,
+     3,
+     5
+    ]
+   }
+  },
+  {
+   "ahora": "2026-10-08T07:05:00",
+   "texto": "comprar pan",
+   "esperado": null
+  },
+  {
+   "ahora": "2026-10-08T07:05:00",
+   "texto": "reunión mañana",
+   "esperado": null
+  },
+  {
+   "ahora": "2026-10-08T07:05:00",
+   "texto": "r   ",
+   "esperado": {
+    "texto": "",
+    "fecha": "2026-10-08",
+    "hora": "09:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-10-08T07:05:00",
+   "texto": "r hora a las 25:00",
+   "esperado": {
+    "texto": "hora a las 25:00",
+    "fecha": "2026-10-08",
+    "hora": "09:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-12-31T23:30:00",
+   "texto": "recuérdame llamar al médico mañana a las 17:30",
+   "esperado": {
+    "texto": "llamar al médico",
+    "fecha": "2027-01-01",
+    "hora": "17:30",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-12-31T23:30:00",
+   "texto": "r entregar la práctica el viernes a las 9",
+   "esperado": {
+    "texto": "entregar la práctica",
+    "fecha": "2027-01-01",
+    "hora": "09:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-12-31T23:30:00",
+   "texto": "recuérdame beber agua todos los días a las 11",
+   "esperado": {
+    "texto": "beber agua",
+    "fecha": null,
+    "hora": "11:00",
+    "dias": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   }
+  },
+  {
+   "ahora": "2026-12-31T23:30:00",
+   "texto": "recuérdame ir al gimnasio los lunes y miércoles a las 7:30",
+   "esperado": {
+    "texto": "ir al gimnasio",
+    "fecha": null,
+    "hora": "07:30",
+    "dias": [
+     0,
+     2
+    ]
+   }
+  },
+  {
+   "ahora": "2026-12-31T23:30:00",
+   "texto": "r reunión 15/10 a las 18.00",
+   "esperado": {
+    "texto": "reunión",
+    "fecha": "2027-10-15",
+    "hora": "18:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-12-31T23:30:00",
+   "texto": "r sacar la basura hoy a las 10",
+   "esperado": {
+    "texto": "sacar la basura",
+    "fecha": "2026-12-31",
+    "hora": "10:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-12-31T23:30:00",
+   "texto": "r estudiar redes pasado mañana 20:15",
+   "esperado": {
+    "texto": "estudiar redes",
+    "fecha": "2027-01-02",
+    "hora": "20:15",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-12-31T23:30:00",
+   "texto": "r comprar pan",
+   "esperado": {
+    "texto": "comprar pan",
+    "fecha": "2027-01-01",
+    "hora": "09:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-12-31T23:30:00",
+   "texto": "r llamar a casa a las 18",
+   "esperado": {
+    "texto": "llamar a casa",
+    "fecha": "2027-01-01",
+    "hora": "18:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-12-31T23:30:00",
+   "texto": "r llamar a mamá a las 5 de la tarde",
+   "esperado": {
+    "texto": "llamar a mamá",
+    "fecha": "2027-01-01",
+    "hora": "17:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-12-31T23:30:00",
+   "texto": "r llamar a mamá el sábado",
+   "esperado": {
+    "texto": "llamar a mamá",
+    "fecha": "2027-01-02",
+    "hora": "09:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-12-31T23:30:00",
+   "texto": "recuerda: revisar el correo cada día a las 8",
+   "esperado": {
+    "texto": "revisar el correo",
+    "fecha": null,
+    "hora": "08:00",
+    "dias": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   }
+  },
+  {
+   "ahora": "2026-12-31T23:30:00",
+   "texto": "r cumpleaños 02/01 a las 10",
+   "esperado": {
+    "texto": "cumpleaños",
+    "fecha": "2027-01-02",
+    "hora": "10:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-12-31T23:30:00",
+   "texto": "r examen 31/02 a las 9",
+   "esperado": {
+    "texto": "examen",
+    "fecha": "2027-01-01",
+    "hora": "09:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-12-31T23:30:00",
+   "texto": "r ver a Ali los martes, jueves y sábados 19:00",
+   "esperado": {
+    "texto": "ver a Ali",
+    "fecha": null,
+    "hora": "19:00",
+    "dias": [
+     1,
+     3,
+     5
+    ]
+   }
+  },
+  {
+   "ahora": "2026-12-31T23:30:00",
+   "texto": "comprar pan",
+   "esperado": null
+  },
+  {
+   "ahora": "2026-12-31T23:30:00",
+   "texto": "reunión mañana",
+   "esperado": null
+  },
+  {
+   "ahora": "2026-12-31T23:30:00",
+   "texto": "r   ",
+   "esperado": {
+    "texto": "",
+    "fecha": "2027-01-01",
+    "hora": "09:00",
+    "dias": []
+   }
+  },
+  {
+   "ahora": "2026-12-31T23:30:00",
+   "texto": "r hora a las 25:00",
+   "esperado": {
+    "texto": "hora a las 25:00",
+    "fecha": "2027-01-01",
+    "hora": "09:00",
+    "dias": []
+   }
+  }
+ ],
+ "orden": [
+  {
+   "ahora": "2026-10-08T12:00:00",
+   "agenda": [
+    {
+     "id": 1,
+     "texto": "x",
+     "fecha": "2026-10-08",
+     "hora": "17:30",
+     "dias": []
+    },
+    {
+     "id": 2,
+     "texto": "y",
+     "fecha": null,
+     "hora": "07:30",
+     "dias": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": 3,
+     "texto": "z",
+     "fecha": "2026-10-05",
+     "hora": "08:00",
+     "dias": []
+    },
+    {
+     "id": 4,
+     "texto": "w",
+     "fecha": null,
+     "hora": "12:00",
+     "dias": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
+   "esperado": [
+    {
+     "id": 4,
+     "cuando": "2026-10-08T12:00",
+     "txt": "hoy 12:00"
+    },
+    {
+     "id": 1,
+     "cuando": "2026-10-08T17:30",
+     "txt": "hoy 17:30"
+    },
+    {
+     "id": 2,
+     "cuando": "2026-10-12T07:30",
+     "txt": "lun 12/10 07:30"
+    }
+   ]
+  },
+  {
+   "ahora": "2026-10-08T07:05:00",
+   "agenda": [
+    {
+     "id": 1,
+     "texto": "x",
+     "fecha": "2026-10-08",
+     "hora": "17:30",
+     "dias": []
+    },
+    {
+     "id": 2,
+     "texto": "y",
+     "fecha": null,
+     "hora": "07:30",
+     "dias": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": 3,
+     "texto": "z",
+     "fecha": "2026-10-05",
+     "hora": "08:00",
+     "dias": []
+    },
+    {
+     "id": 4,
+     "texto": "w",
+     "fecha": null,
+     "hora": "12:00",
+     "dias": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
+   "esperado": [
+    {
+     "id": 4,
+     "cuando": "2026-10-08T12:00",
+     "txt": "hoy 12:00"
+    },
+    {
+     "id": 1,
+     "cuando": "2026-10-08T17:30",
+     "txt": "hoy 17:30"
+    },
+    {
+     "id": 2,
+     "cuando": "2026-10-12T07:30",
+     "txt": "lun 12/10 07:30"
+    }
+   ]
+  },
+  {
+   "ahora": "2026-12-31T23:30:00",
+   "agenda": [
+    {
+     "id": 1,
+     "texto": "x",
+     "fecha": "2026-10-08",
+     "hora": "17:30",
+     "dias": []
+    },
+    {
+     "id": 2,
+     "texto": "y",
+     "fecha": null,
+     "hora": "07:30",
+     "dias": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": 3,
+     "texto": "z",
+     "fecha": "2026-10-05",
+     "hora": "08:00",
+     "dias": []
+    },
+    {
+     "id": 4,
+     "texto": "w",
+     "fecha": null,
+     "hora": "12:00",
+     "dias": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
+   "esperado": [
+    {
+     "id": 4,
+     "cuando": "2027-01-01T12:00",
+     "txt": "mañana 12:00"
+    },
+    {
+     "id": 2,
+     "cuando": "2027-01-04T07:30",
+     "txt": "lun 04/01 07:30"
+    }
+   ]
+  }
+ ],
+ "habitos": [
+  {
+   "fecha": "2026-10-01",
+   "esperado": [
+    [
+     "sueno",
+     "Dormí 7 h o más"
+    ],
+    [
+     "ejercicio",
+     "Ejercicio"
+    ],
+    [
+     "trabajo",
+     "2 bloques de trabajo"
+    ],
+    [
+     "comida",
+     "Comí bien"
+    ],
+    [
+     "prioridades",
+     "Prioridades de mañana"
+    ]
+   ]
+  },
+  {
+   "fecha": "2026-10-02",
+   "esperado": [
+    [
+     "sueno",
+     "Dormí 7 h o más"
+    ],
+    [
+     "ejercicio",
+     "Ejercicio"
+    ],
+    [
+     "repaso",
+     "Repaso semanal"
+    ],
+    [
+     "trabajo",
+     "2 bloques de trabajo"
+    ],
+    [
+     "comida",
+     "Comí bien"
+    ]
+   ]
+  },
+  {
+   "fecha": "2026-10-03",
+   "esperado": [
+    [
+     "sueno",
+     "Dormí 7 h o más"
+    ],
+    [
+     "ejercicio",
+     "Ejercicio"
+    ],
+    [
+     "estudio",
+     "1 bloque de estudio"
+    ],
+    [
+     "comida",
+     "Comí bien"
+    ],
+    [
+     "prioridades",
+     "Prioridades de mañana"
+    ]
+   ]
+  },
+  {
+   "fecha": "2026-10-04",
+   "esperado": [
+    [
+     "sueno",
+     "Dormí 7 h o más"
+    ],
+    [
+     "ejercicio",
+     "Ejercicio"
+    ],
+    [
+     "planificar",
+     "Planificar la semana"
+    ],
+    [
+     "estudio",
+     "1 bloque de estudio"
+    ],
+    [
+     "comida",
+     "Comí bien"
+    ]
+   ]
+  },
+  {
+   "fecha": "2026-10-05",
+   "esperado": [
+    [
+     "sueno",
+     "Dormí 7 h o más"
+    ],
+    [
+     "ejercicio",
+     "Ejercicio"
+    ],
+    [
+     "trabajo",
+     "2 bloques de trabajo"
+    ],
+    [
+     "comida",
+     "Comí bien"
+    ],
+    [
+     "prioridades",
+     "Prioridades de mañana"
+    ]
+   ]
+  },
+  {
+   "fecha": "2026-10-06",
+   "esperado": [
+    [
+     "sueno",
+     "Dormí 7 h o más"
+    ],
+    [
+     "ejercicio",
+     "Ejercicio"
+    ],
+    [
+     "trabajo",
+     "2 bloques de trabajo"
+    ],
+    [
+     "comida",
+     "Comí bien"
+    ],
+    [
+     "prioridades",
+     "Prioridades de mañana"
+    ]
+   ]
+  },
+  {
+   "fecha": "2026-10-07",
+   "esperado": [
+    [
+     "sueno",
+     "Dormí 7 h o más"
+    ],
+    [
+     "ejercicio",
+     "Ejercicio"
+    ],
+    [
+     "trabajo",
+     "2 bloques de trabajo"
+    ],
+    [
+     "comida",
+     "Comí bien"
+    ],
+    [
+     "prioridades",
+     "Prioridades de mañana"
+    ]
+   ]
+  },
+  {
+   "fecha": "2026-10-08",
+   "esperado": [
+    [
+     "sueno",
+     "Dormí 7 h o más"
+    ],
+    [
+     "ejercicio",
+     "Ejercicio"
+    ],
+    [
+     "trabajo",
+     "2 bloques de trabajo"
+    ],
+    [
+     "comida",
+     "Comí bien"
+    ],
+    [
+     "prioridades",
+     "Prioridades de mañana"
+    ]
+   ]
+  },
+  {
+   "fecha": "2026-10-09",
+   "esperado": [
+    [
+     "sueno",
+     "Dormí 7 h o más"
+    ],
+    [
+     "ejercicio",
+     "Ejercicio"
+    ],
+    [
+     "repaso",
+     "Repaso semanal"
+    ],
+    [
+     "trabajo",
+     "2 bloques de trabajo"
+    ],
+    [
+     "comida",
+     "Comí bien"
+    ]
+   ]
+  },
+  {
+   "fecha": "2026-10-10",
+   "esperado": [
+    [
+     "sueno",
+     "Dormí 7 h o más"
+    ],
+    [
+     "ejercicio",
+     "Ejercicio"
+    ],
+    [
+     "estudio",
+     "1 bloque de estudio"
+    ],
+    [
+     "comida",
+     "Comí bien"
+    ],
+    [
+     "prioridades",
+     "Prioridades de mañana"
+    ]
+   ]
+  },
+  {
+   "fecha": "2026-10-11",
+   "esperado": [
+    [
+     "sueno",
+     "Dormí 7 h o más"
+    ],
+    [
+     "ejercicio",
+     "Ejercicio"
+    ],
+    [
+     "planificar",
+     "Planificar la semana"
+    ],
+    [
+     "estudio",
+     "1 bloque de estudio"
+    ],
+    [
+     "comida",
+     "Comí bien"
+    ]
+   ]
+  },
+  {
+   "fecha": "2026-10-12",
+   "esperado": [
+    [
+     "sueno",
+     "Dormí 7 h o más"
+    ],
+    [
+     "ejercicio",
+     "Ejercicio"
+    ],
+    [
+     "trabajo",
+     "2 bloques de trabajo"
+    ],
+    [
+     "comida",
+     "Comí bien"
+    ],
+    [
+     "prioridades",
+     "Prioridades de mañana"
+    ]
+   ]
+  },
+  {
+   "fecha": "2026-10-13",
+   "esperado": [
+    [
+     "sueno",
+     "Dormí 7 h o más"
+    ],
+    [
+     "ejercicio",
+     "Ejercicio"
+    ],
+    [
+     "trabajo",
+     "2 bloques de trabajo"
+    ],
+    [
+     "comida",
+     "Comí bien"
+    ],
+    [
+     "prioridades",
+     "Prioridades de mañana"
+    ]
+   ]
+  },
+  {
+   "fecha": "2026-10-14",
+   "esperado": [
+    [
+     "sueno",
+     "Dormí 7 h o más"
+    ],
+    [
+     "ejercicio",
+     "Ejercicio"
+    ],
+    [
+     "trabajo",
+     "2 bloques de trabajo"
+    ],
+    [
+     "comida",
+     "Comí bien"
+    ],
+    [
+     "prioridades",
+     "Prioridades de mañana"
+    ]
+   ]
+  },
+  {
+   "fecha": "2026-10-08",
+   "entregas": [
+    {
+     "start": "2026-10-09T14:00",
+     "titulo": "Práctica de redes"
+    }
+   ],
+   "esperado": [
+    [
+     "sueno",
+     "Dormí 7 h o más"
+    ],
+    [
+     "ejercicio",
+     "Ejercicio"
+    ],
+    [
+     "entrega",
+     "Avanzar: Práctica de redes"
+    ],
+    [
+     "trabajo",
+     "2 bloques de trabajo"
+    ],
+    [
+     "comida",
+     "Comí bien"
+    ]
+   ]
+  }
  ]
 }
