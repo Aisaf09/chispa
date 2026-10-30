@@ -2,6 +2,7 @@
 import * as R from "./rezos.js";
 import * as S from "./store.js";
 import * as A from "./agenda.js";
+import * as Y from "./sync.js";
 
 const E = S.cargar();
 let tab = "hoy";
@@ -12,7 +13,8 @@ const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&
 const rad = (d) => (d * Math.PI) / 180;
 const cfg = () => ({ lat: E.ajustes.lat, lon: E.ajustes.lon, fajr: E.ajustes.fajr, isha: E.ajustes.isha, asr: E.ajustes.asr });
 const hhmm = (d) => d.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", hour12: false });
-const guardar = () => S.guardar(E);
+let sucio = false;
+const guardar = () => { S.guardar(E); sucio = true; };
 
 function cuenta(ms) {
   const s = Math.max(0, Math.floor(ms / 1000));
@@ -92,9 +94,16 @@ function descCuando(r, cuando, ahora) {
 const OK = '<svg viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.8"/></svg>';
 
 // ---------- vistas ----------
+function entregasProximas(ahora) {
+  const lista = Y.entregas().filter((e) => e.start > ahora.getTime() - 3600000).sort((a, b) => a.start - b.start).slice(0, 3);
+  if (!lista.length) return "";
+  return `<h2>Entregas</h2><div class="card">${lista.map((e) => `<div class="fila"><span class="tx">${esc(e.titulo)}</span>
+    <span class="sub">${esc(A.etiquetaCuando(new Date(e.start), ahora))}</span></div>`).join("")}</div>`;
+}
+
 function vistaHoy() {
   const ahora = new Date(), hoy = S.iso(ahora), h = R.horariosDe(ahora, cfg()), prox = R.proximo(ahora, cfg());
-  const rez = new Set(E.rezos[hoy] || []), chk = new Set(E.checks[hoy] || []), habitos = S.habitosHoy(E, ahora);
+  const rez = new Set(E.rezos[hoy] || []), chk = new Set(E.checks[hoy] || []), habitos = S.habitosHoy(E, ahora, Y.entregas());
   const proximos = A.ordenar(E.agenda, ahora).filter((p) => p.cuando.getTime() > ahora.getTime()).slice(0, 3);
   const sigRezo = R.proximo(ahora, cfg(), R.REZOS);
   const f0 = ahora.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" });
@@ -109,6 +118,7 @@ function vistaHoy() {
       <span class="n">${R.NOMBRES[id]}</span><span class="h">${h[id] ? hhmm(h[id]) : "--:--"}</span></button>`).join("")}</div>
     ${proximos.length ? `<h2>Agenda</h2><div class="card">${proximos.map(({ cuando, r }) => `<div class="fila"><span class="tx">${esc(r.texto)}</span>
       <span class="sub" data-cuenta="${cuando.getTime()}" data-pre="en "></span></div>`).join("")}</div>` : ""}
+    ${entregasProximas(ahora)}
     <h2>Hábitos de hoy</h2><div class="card">${habitos.map(([id, txt]) => `<button class="fila${chk.has(id) ? " hecha" : ""}" data-a="check" data-id="${id}" role="checkbox" aria-checked="${chk.has(id)}">
       <span class="chk">${OK}</span><span class="tx">${esc(txt)}</span></button>`).join("")}</div>
     <button class="card foco-mini" data-a="tab" data-id="foco"><div><div class="et">Foco · hoy ${durTxt(E.foco[hoy] || 0)}</div>
@@ -156,10 +166,21 @@ function vistaFoco() {
     <div class="card" style="margin-top:22px"><p class="nota">Bloques de 90 min de foco y 20 de descanso. El tiempo se calcula por la hora de fin, así que sigue contando aunque la pantalla se bloquee.</p></div>`;
 }
 
+function bloqueSync() {
+  if (!Y.configurado()) return `<p class="nota">Sin configurar. Faltan la URL y la clave pública de Supabase en <b>config.js</b> (mira la guía GUIA-FINAL.md).</p>`;
+  if (!Y.conectado()) return `<p class="nota">Entra con el usuario que creaste en Supabase para compartir hábitos, tareas, Tasbih y foco con Chispa en el PC.</p>
+    <form data-form="login" style="margin-top:12px"><div class="campo"><label>Correo</label><input type="email" name="email" autocomplete="username" required></div>
+      <div class="campo"><label>Contraseña</label><input type="password" name="clave" autocomplete="current-password" required></div>
+      <button class="btn pri" type="submit">Conectar</button></form>${Y.estado.error ? `<p class="nota" style="color:var(--rojo)">${esc(Y.estado.error)}</p>` : ""}`;
+  const hace = Y.estado.ultimo ? `hace ${cuenta(Date.now() - Y.estado.ultimo)}` : "pendiente";
+  return `<p class="nota">Conectada · última sincronización ${hace}.</p>${Y.estado.error ? `<p class="nota" style="color:var(--rojo)">${esc(Y.estado.error)}</p>` : ""}
+    <div class="fila-btn" style="margin-top:12px"><button class="btn peq pri" data-a="sync-ahora">Sincronizar ahora</button><button class="btn peq" data-a="sync-salir">Desconectar</button></div>`;
+}
+
 function vistaAjustes() {
   const a = E.ajustes, hace = a.gps_ts ? cuenta(Date.now() - a.gps_ts) : "";
   const metodo = `${a.fajr}/${a.isha}`;
-  return `<div class="cab"><div><h1>Ajustes</h1><p class="sub">Chispa · todo en este teléfono</p></div></div>
+  return `<div class="cab"><div><h1>Ajustes</h1><p class="sub">Chispa${Y.conectado() ? " · sincronizada con el PC" : " · datos en este teléfono"}</p></div></div>
     <h2>Ubicación</h2><div class="card"><p class="nota">${a.gps ? `Del GPS del iPhone${hace ? `, hace ${hace}` : ""}.` : "Manual."} Lat ${a.lat}, lon ${a.lon}</p>
       <div class="fila-btn" style="margin-top:12px"><button class="btn pri" data-a="gps">Usar la ubicación del iPhone</button></div>
       <form data-form="ubic" style="margin-top:14px"><div class="doble"><div class="campo"><label>Latitud</label><input type="number" name="lat" step="any" value="${a.lat}"></div><div class="campo"><label>Longitud</label><input type="number" name="lon" step="any" value="${a.lon}"></div></div>
@@ -168,10 +189,12 @@ function vistaAjustes() {
         ${[["18/17", "Liga Mundial Musulmana (18° / 17°)"], ["15/15", "ISNA (15° / 15°)"], ["12/12", "UOIF (12° / 12°)"]].map(([v, n]) => `<option value="${v}"${v === metodo ? " selected" : ""}>${n}</option>`).join("")}</select></div>
       <div class="campo" style="margin:0"><label>Asr</label><select data-sel="asr"><option value="standard"${a.asr === "standard" ? " selected" : ""}>Estándar (Shafi'i, Maliki, Hanbali)</option><option value="hanafi"${a.asr === "hanafi" ? " selected" : ""}>Hanafí</option></select></div></div>
     <h2>Avisos</h2><div class="card"><p class="nota">Los recordatorios suenan con un aviso dentro de la app. Si la app estaba cerrada, al abrirla verás lo que te perdiste en las últimas 24 h.</p>
-      <p class="nota">Para que iOS te avise con la app cerrada hacen falta las notificaciones push (siguiente fase).</p>
-      <div class="fila-btn" style="margin-top:12px"><button class="btn peq" data-a="avisos-permiso">${typeof Notification !== "undefined" && Notification.permission === "granted" ? "Avisos del sistema permitidos" : "Permitir avisos del sistema"}</button></div></div>
+      <p class="nota">${E.ajustes.push ? "Avisos con la app cerrada activados: te llegan las oraciones y recordatorios de los próximos 14 días." : "Para que iOS te avise con la app cerrada, activa los avisos push (hay que tener la app en la pantalla de inicio y la sincronización conectada)."}</p>
+      <div class="fila-btn" style="margin-top:12px"><button class="btn peq" data-a="avisos-permiso">${typeof Notification !== "undefined" && Notification.permission === "granted" ? "Avisos del sistema permitidos" : "Permitir avisos del sistema"}</button>
+      ${Y.conectado() && Y.pushDisponible() ? `<button class="btn peq${E.ajustes.push ? "" : " pri"}" data-a="push-activar">${E.ajustes.push ? "Reactivar avisos con la app cerrada" : "Activar avisos con la app cerrada"}</button>` : ""}</div></div>
+    <h2>Sincronización</h2><div class="card">${bloqueSync()}</div>
     <h2>Instalar en el iPhone</h2><div class="card"><p class="nota">En Safari: botón Compartir → <b>Añadir a pantalla de inicio</b>. Así se abre como una app a pantalla completa y funciona sin conexión.</p>
-      <p class="nota">La sincronización con Chispa en Windows y los avisos de oración llegarán en las siguientes fases.</p></div>
+      </div>
     <h2>Datos</h2><div class="card"><div class="fila-btn"><button class="btn peligro" data-a="borrar">Borrar todos los datos de este teléfono</button></div></div>`;
 }
 
@@ -312,6 +335,11 @@ function accion(a, id) {
       if (typeof Notification === "undefined") return aviso("Este navegador no admite avisos del sistema");
       Notification.requestPermission().then((p) => { aviso(p === "granted" ? "Avisos del sistema permitidos" : "Avisos no permitidos"); render(); });
       return;
+    case "sync-ahora": aviso("Sincronizando…"); sincronizarYa(true); return;
+    case "sync-salir": Y.salir(); aviso("Desconectada de la nube"); break;
+    case "push-activar":
+      Y.activarPush(E).then(() => { guardar(); render(); aviso("Avisos con la app cerrada activados"); }).catch((e) => aviso(e.message));
+      return;
     case "gps": usarGPS(); return;
     case "brujula": activarBrujula(); return;
     case "borrar":
@@ -338,6 +366,10 @@ document.addEventListener("submit", (ev) => {
     const r = S.añadirRecordatorio(E, A.esRecordatorio(txt) ? txt : "recuérdame " + txt);
     if (!r) return;
     guardar(); render(); aviso("Recordatorio guardado");
+  } else if (f.dataset.form === "login") {
+    aviso("Conectando…");
+    Y.entrar(f.elements.email.value.trim(), f.elements.clave.value).then(() => sincronizarYa(true))
+      .catch((e) => { Y.estado.error = e.message; render(); aviso("No se pudo conectar"); });
   } else if (f.dataset.form === "ubic") {
     const lat = parseFloat(f.elements.lat.value), lon = parseFloat(f.elements.lon.value);
     if (!(lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180)) return aviso("Latitud (−90 a 90) y longitud (−180 a 180)");
@@ -351,10 +383,25 @@ document.addEventListener("change", (ev) => {
   else E.ajustes.asr = s.value;
   guardar(); aviso("Horarios recalculados");
 });
-document.addEventListener("visibilitychange", () => { if (!document.hidden) { tick(); if (tab !== "fe") render(); } });
+document.addEventListener("visibilitychange", () => { if (!document.hidden) { tick(); if (tab !== "fe") render(); sincronizarYa(); } });
+
+// ---------- sincronización con la nube ----------
+let sincronizando = false;
+async function sincronizarYa(avisar = false) {
+  if (sincronizando || !Y.conectado()) return;
+  sincronizando = true;
+  try {
+    if (await Y.sincronizar(E)) { S.guardar(E); render(); }
+    else if (avisar || tab === "ajustes") { if (tab === "ajustes") render(); }
+    if (avisar) aviso(Y.estado.error ? "Error: " + Y.estado.error : "Sincronizado");
+    if (!Y.estado.error) await Y.programarPush(E);
+  } finally { sincronizando = false; sucio = false; }
+}
+setInterval(() => { if (!document.hidden && (sucio || Date.now() - Y.estado.ultimo > 60000)) sincronizarYa(); }, 15000);
 
 // ---------- arranque ----------
 render();
 setInterval(tick, 1000);
 if (E.ajustes.gps && Date.now() - E.ajustes.gps_ts > 3 * 3600 * 1000) usarGPS(true);   // refresca la ubicación del iPhone
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => { /* sin HTTPS/localhost no hay modo sin conexión */ });
+sincronizarYa();

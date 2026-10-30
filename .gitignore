@@ -1,0 +1,5 @@
+test/
+herramientas/
+*.bak
+package.json
+LEEME.md
