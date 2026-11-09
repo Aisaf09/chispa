@@ -4,9 +4,12 @@ import CFG from "../config.js";
 import * as S from "./store.js";
 import * as R from "./rezos.js";
 import * as A from "./agenda.js";
+import * as T from "./tareas.js";
+import * as K from "./cuidado.js";
 
-export const CLAVES = ["checks", "rezos", "tareas", "foco", "tasbih", "agenda", "habitos_dia"];
+export const CLAVES = ["checks", "rezos", "tareas", "foco", "tasbih", "agenda", "habitos_dia", "cuidado"];
 const K_SES = "chispa.sync.sesion.v1", K_META = "chispa.sync.meta.v1", K_ENT = "chispa.sync.entregas.v1", K_PUSH = "chispa.push.firma.v1";
+const K_RUT = "chispa.sync.cuidado_rutina.v1";
 
 const leer = (k, def) => { try { return JSON.parse(localStorage.getItem(k)) ?? def; } catch { return def; } };
 const poner = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* sin almacenamiento */ } };
@@ -47,7 +50,7 @@ export async function entrar(email, clave) {
   const d = await pedir("/auth/v1/token?grant_type=password", { metodo: "POST", cuerpo: { email, password: clave }, sinSesion: true });
   guardarSesion(d);
 }
-export function salir() { for (const k of [K_SES, K_META, K_ENT, K_PUSH]) quitar(k); }
+export function salir() { for (const k of [K_SES, K_META, K_ENT, K_PUSH, K_RUT]) quitar(k); }
 
 // ---------- sincronización ----------
 function aplicar(E, clave, valor) {
@@ -61,6 +64,7 @@ export async function sincronizar(E) {
     const filas = await pedir("/rest/v1/estado?select=clave,valor,t");
     const remoto = Object.fromEntries(filas.map((f) => [f.clave, f]));
     if (remoto.moodle_eventos) poner(K_ENT, remoto.moodle_eventos.valor);
+    if (remoto.cuidado_rutina) poner(K_RUT, remoto.cuidado_rutina.valor);
     const meta = leer(K_META, {}), ahora = Date.now(), subir = [];
     let cambiado = false;
     for (const clave of CLAVES) {
@@ -84,6 +88,8 @@ export async function sincronizar(E) {
 
 /** Entregas de Moodle que sube Chispa (solo título y fecha): [{titulo, start(ms)}]. */
 export const entregas = () => (leer(K_ENT, []) || []).map((e) => ({ titulo: e.titulo, start: Date.parse(e.inicio) })).filter((e) => e.start);
+/** Rutina de cuidado y horas que sube Chispa del PC (o las de por defecto). */
+export const cuidado = () => K.config(leer(K_RUT, null));
 
 // ---------- avisos push (con la app cerrada) ----------
 const b64 = (s) => { const p = "=".repeat((4 - (s.length % 4)) % 4); const r = atob((s + p).replace(/-/g, "+").replace(/_/g, "/")); return Uint8Array.from(r, (c) => c.charCodeAt(0)); };
@@ -102,22 +108,43 @@ export async function activarPush(E) {
   await programarPush(E);
 }
 
-/** Sube los próximos 14 días de oraciones y recordatorios para que el servidor los envíe aunque la app esté cerrada. */
-export async function programarPush(E, ahora = new Date()) {
-  if (!conectado() || !E.ajustes.push) return;
+/** Lo que el servidor debe enviar con la app cerrada: 14 días de oraciones, recordatorios y avisos previos; y para hoy
+ *  y mañana, el aviso de tareas (11:00 y 18:00) y la rutina de cuidado (si queda algo por hacer). */
+export function itemsPush(E, ahora = new Date(), cui = K.config(null)) {
   const items = [], cfg = { lat: E.ajustes.lat, lon: E.ajustes.lon, fajr: E.ajustes.fajr, isha: E.ajustes.isha, asr: E.ajustes.asr };
   const hhmm = (d) => d.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", hour12: false });
+  const enHora = (dia, txt) => { const [h, m] = txt.split(":").map(Number); return new Date(dia.getFullYear(), dia.getMonth(), dia.getDate(), h, m); };
   for (let i = 0; i < 14; i++) {
-    const dia = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() + i);
+    const dia = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() + i), d0 = Math.max(dia.getTime() - 1, ahora.getTime()), d1 = dia.getTime() + 86400000 - 1;
     const h = R.horariosDe(dia, cfg);
     for (const id of R.REZOS) {
       if (h[id] && h[id] > ahora) items.push({ id: `p-${S.iso(dia)}-${id}`, cuando: h[id].toISOString(), titulo: `Hora de ${R.NOMBRES[id]}`, cuerpo: hhmm(h[id]) });
     }
-    for (const { r, cuando } of A.ocurridos(E.agenda, Math.max(dia.getTime() - 1, ahora.getTime()), dia.getTime() + 86400000 - 1)) {
+    for (const { r, cuando } of A.ocurridos(E.agenda, d0, d1)) {
       items.push({ id: `a-${r.id}-${cuando.getTime()}`, cuando: cuando.toISOString(), titulo: "Chispa · Recordatorio", cuerpo: r.texto });
     }
+    for (const { r, cuando, aviso, antes } of A.ocurridosAntes(E.agenda, d0, d1)) {
+      items.push({ id: `b-${r.id}-${cuando.getTime()}-${antes}`, cuando: aviso.toISOString(), titulo: `${A.textoAntes(antes)} · ${hhmm(cuando)}`, cuerpo: r.texto });
+    }
+    if (i > 1) continue;
+    for (const hora of T.HORAS_AVISO) {                       // tareas: con lo que hay ahora (se recalcula en cada sincronización)
+      const c = enHora(dia, hora), res = c > ahora && T.resumen(E.tareas, dia);
+      if (res) items.push({ id: `t-${S.iso(dia)}-${hora}`, cuando: c.toISOString(), titulo: res[0], cuerpo: res[1] });
+    }
+    const hechos = (E.cuidado || {})[S.iso(dia)] || [];
+    for (const m of ["manana", "noche"]) {
+      const c = enHora(dia, cui.horas[m]), pend = K.pendientes(cui.rutina, hechos, m);
+      if (c > ahora && pend.length) items.push({ id: `c-${S.iso(dia)}-${m}`, cuando: c.toISOString(), titulo: `Rutina de ${K.TITULOS[m].toLowerCase()}`, cuerpo: K.textoAviso(cui.rutina, hechos, m) });
+    }
   }
-  const firma = canon(items.map((x) => x.id)) + "|" + Math.floor(ahora.getTime() / (12 * 3600000));
+  return items.sort((a, b) => (a.cuando < b.cuando ? -1 : 1));
+}
+
+/** Sube los avisos de itemsPush para que el servidor los envíe aunque la app esté cerrada. */
+export async function programarPush(E, ahora = new Date()) {
+  if (!conectado() || !E.ajustes.push) return;
+  const items = itemsPush(E, ahora, cuidado());
+  const firma = canon(items.map((x) => [x.id, x.cuerpo, x.titulo])) + "|" + Math.floor(ahora.getTime() / (12 * 3600000));
   if (leer(K_PUSH, "") === firma) return;
   try {
     await pedir(`/rest/v1/avisos_push?enviado=eq.false&cuando=gte.${encodeURIComponent(ahora.toISOString())}`, { metodo: "DELETE", cab: { Prefer: "return=minimal" } });

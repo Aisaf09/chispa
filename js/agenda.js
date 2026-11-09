@@ -81,7 +81,7 @@ export function parsear(texto, ahora) {
 const aHora = (r) => (r.hora || "09:00").split(":").map(Number);
 
 /** Cuándo suena el recordatorio el día `dia` (Date) o null si ese día no toca. */
-function enDia(r, dia) {
+export function enDia(r, dia) {
   const [h, mi] = aHora(r);
   const suena = r.dias && r.dias.length ? r.dias.includes(diaSemana(dia)) : r.fecha === isoDe(dia);
   return suena ? new Date(dia.getFullYear(), dia.getMonth(), dia.getDate(), h, mi) : null;
@@ -131,6 +131,27 @@ export function ocurridos(agenda, desde, hasta) {
     }
   }
   return out.sort((a, b) => a.cuando - b.cuando);
+}
+
+// ---------- aviso previo («antes»: [minutos]) ----------
+export const ANTES = [[0, "Sin aviso previo"], [5, "5 min antes"], [15, "15 min antes"], [30, "30 min antes"], [60, "1 h antes"], [1440, "1 día antes"]];
+export const ANTES_DEF = 15;
+export function textoAntes(min) {
+  if (min >= 1440 && min % 1440 === 0) return min === 1440 ? "Mañana" : `Dentro de ${min / 1440} días`;
+  if (min >= 60 && min % 60 === 0) return `Dentro de ${min / 60} h`;
+  return `Dentro de ${min} min`;
+}
+/** Avisos previos en el intervalo (desde, hasta] (ms): [{r, cuando (del evento), aviso (Date), antes}]. */
+export function ocurridosAntes(agenda, desde, hasta) {
+  const out = [];
+  for (const r of agenda) {
+    for (const min of r.antes || []) {
+      if (!min) continue;
+      const ms = min * 60000;
+      for (const { cuando } of ocurridos([r], desde + ms, hasta + ms)) out.push({ r, cuando, aviso: new Date(cuando.getTime() - ms), antes: min });
+    }
+  }
+  return out.sort((a, b) => a.aviso - b.aviso);
 }
 
 /** Los 5 hábitos de `dia` (Date): dormir y ejercicio siempre; el resto según el día de la semana y las entregas. */

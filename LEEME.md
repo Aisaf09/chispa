@@ -1,6 +1,6 @@
 # Chispa en el iPhone (PWA)
 
-Versión para el teléfono de Chispa (la app de Windows en `../isla`). **Fase 1: todo funciona sin nube**, guardando los datos en el propio teléfono.
+Versión para el teléfono de Chispa (la app de Windows en `../isla`). Funciona sin nube (datos en el teléfono) y, al conectar Supabase, se sincroniza con Chispa en Windows y recibe avisos push. Pasos de puesta en marcha: `../GUIA-FINAL.md`.
 
 ## Qué incluye
 - Próxima oración y horarios (calculados en el dispositivo, mismo algoritmo que `isla/rezos.py`) con cuenta atrás.
@@ -12,9 +12,9 @@ Versión para el teléfono de Chispa (la app de Windows en `../isla`). **Fase 1:
 
 ## Fases (cada una con visto bueno)
 1. ✅ PWA sin nube (esta).
-2. Sincronización con Supabase (Chispa en Windows ↔ PWA).
-3. Avisos de oración con Web Push (iOS 16.4+, PWA en la pantalla de inicio).
-4. Despliegue en GitHub Pages (HTTPS: necesario para GPS, brújula e instalación en el iPhone).
+2. ✅ Sincronización con Supabase (Chispa en Windows ↔ PWA): `js/sync.js` + `isla/chispa_sync.py`. Falta conectarla con tu proyecto.
+3. ✅ Avisos con Web Push (iOS 16.4+, PWA en la pantalla de inicio): `sw.js` + `../supabase/functions/enviar-avisos`. Falta desplegar.
+4. Despliegue en GitHub Pages (HTTPS: necesario para GPS, brújula e instalación en el iPhone). Falta subirlo.
 
 ## Probar en el ordenador
 ```
@@ -29,8 +29,9 @@ python -m http.server 8765 --bind 127.0.0.1
 python test/generar_esperado.py              # referencia de Python (isla/rezos.py)
 TZ=Europe/Madrid node test/test_rezos.mjs    # la PWA da los mismos minutos que Chispa
 node test/test_store.mjs                     # hábitos, racha, tareas, Tasbih, temporizador
+node test/test_sync.mjs                      # sincronización con una nube falsa
 python herramientas/generar_iconos.py        # regenera los iconos
 ```
 
 ## Privacidad
-Sin claves ni cuentas en esta fase. Nada sale del teléfono.
+`config.js` solo lleva valores públicos (URL, clave anon, VAPID pública). Moodle solo sube título y fecha; el token del calendario no sale del PC.

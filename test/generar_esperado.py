@@ -71,8 +71,36 @@ for d in range(1, 15):
 ev = [{"start": dt.datetime(2026, 10, 9, 14, 0), "titulo": "Práctica de redes"}]
 habitos.append({"fecha": "2026-10-08", "entregas": [{"start": "2026-10-09T14:00", "titulo": "Práctica de redes"}],
                 "esperado": [list(h) for h in ag.habitos_del_dia(dt.date(2026, 10, 8), ev)]})
+# tareas: mismo texto y mismo día en Python y en JS (parsear, orden, etiqueta, completar y resumen)
+import chispa_tareas as tar  # noqa: E402
+HOYS = [dt.date(2026, 11, 9), dt.date(2026, 11, 14), dt.date(2026, 12, 31)]     # lunes, sábado, jueves fin de año
+T_TEXTOS = ["entregar informe viernes !!", "llamar al banco mañana", "comprar pan", "estudiar redes pasado mañana !",
+            "gimnasio cada día", "revisar correo entre semana", "pagar alquiler cada mes", "regar plantas cada semana el sábado",
+            "examen 15/12 !!!", "cita 31/02", "llamar a mamá por la mañana", "hoy: limpiar la habitación", "   ",
+            "!!", "preparar el Miércoles la reunión", "comprar billetes el domingo !", "repasar 2/1/27", "Mañana sacar la basura"]
+tparse = [{"hoy": h.isoformat(), "texto": t, "esperado": tar.parsear(t, h)} for h in HOYS for t in T_TEXTOS]
+T_LISTA = [{"id": 1, "texto": "a", "hecha": False, "fecha": "2026-11-05", "prio": 0},
+           {"id": 2, "texto": "b", "hecha": False, "fecha": "2026-11-09", "prio": 2},
+           {"id": 3, "texto": "c", "hecha": False, "fecha": "2026-11-09", "prio": 0},
+           {"id": 4, "texto": "d", "hecha": False},
+           {"id": 5, "texto": "e", "hecha": True, "fecha": "2026-11-01"},
+           {"id": 6, "texto": "f", "hecha": False, "fecha": "2026-11-10", "prio": 1, "repetir": "semanal"},
+           {"id": 7, "texto": "g", "hecha": False, "fecha": "2026-11-13"},
+           {"id": 8, "texto": "h", "hecha": False, "fecha": "2026-12-25", "prio": 1},
+           {"id": 9, "texto": "i", "hecha": False, "fecha": "2026-11-07", "prio": 2}]
+torden = [{"hoy": h.isoformat(), "lista": T_LISTA, "orden": [t["id"] for t in tar.ordenar(T_LISTA, h)],
+           "etiquetas": {t["id"]: tar.etiqueta(t, h) for t in T_LISTA}, "resumen": tar.resumen(T_LISTA, h)}
+          for h in HOYS[:2]]
+tsig = [{"fecha": f, "repetir": r, "hoy": h, "esperado": tar.siguiente_fecha(f, r, dt.date.fromisoformat(h))}
+        for f, r, h in [("2026-11-09", "diaria", "2026-11-09"), ("2026-11-02", "diaria", "2026-11-09"),
+                        ("2026-11-13", "laborables", "2026-11-13"), ("2026-11-14", "laborables", "2026-11-14"),
+                        ("2026-11-09", "semanal", "2026-11-09"), ("2026-10-01", "semanal", "2026-11-09"),
+                        ("2026-01-31", "mensual", "2026-01-31"), ("2026-12-15", "mensual", "2026-12-15"),
+                        ("2026-11-20", "semanal", "2026-11-09")]]
 with open(os.path.join(AQUI, "esperado.json"), "w", encoding="utf-8") as f:
     json.dump({"casos": casos, "sol": sol, "proximo": prox, "qibla": qib, "agenda": agenda, "orden": orden,
-               "habitos": habitos}, f, ensure_ascii=False, indent=1)
+               "habitos": habitos, "tareas_parsear": tparse, "tareas_orden": torden, "tareas_siguiente": tsig},
+              f, ensure_ascii=False, indent=1)
 print(f"{len(casos)} casos de horarios, {len(sol)} de sol, {len(prox)} de proximo, {len(qib)} de qibla, "
-      f"{len(agenda)} de agenda, {len(orden)} de orden, {len(habitos)} de habitos")
+      f"{len(agenda)} de agenda, {len(orden)} de orden, {len(habitos)} de habitos, "
+      f"{len(tparse) + len(torden) + len(tsig)} de tareas")

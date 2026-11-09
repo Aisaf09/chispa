@@ -3447,5 +3447,755 @@
     ]
    ]
   }
+ ],
+ "tareas_parsear": [
+  {
+   "hoy": "2026-11-09",
+   "texto": "entregar informe viernes !!",
+   "esperado": {
+    "texto": "entregar informe",
+    "fecha": "2026-11-13",
+    "prio": 2,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-09",
+   "texto": "llamar al banco mañana",
+   "esperado": {
+    "texto": "llamar al banco",
+    "fecha": "2026-11-10",
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-09",
+   "texto": "comprar pan",
+   "esperado": {
+    "texto": "comprar pan",
+    "fecha": null,
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-09",
+   "texto": "estudiar redes pasado mañana !",
+   "esperado": {
+    "texto": "estudiar redes",
+    "fecha": "2026-11-11",
+    "prio": 1,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-09",
+   "texto": "gimnasio cada día",
+   "esperado": {
+    "texto": "gimnasio",
+    "fecha": "2026-11-09",
+    "prio": 0,
+    "repetir": "diaria"
+   }
+  },
+  {
+   "hoy": "2026-11-09",
+   "texto": "revisar correo entre semana",
+   "esperado": {
+    "texto": "revisar correo",
+    "fecha": "2026-11-09",
+    "prio": 0,
+    "repetir": "laborables"
+   }
+  },
+  {
+   "hoy": "2026-11-09",
+   "texto": "pagar alquiler cada mes",
+   "esperado": {
+    "texto": "pagar alquiler",
+    "fecha": "2026-11-09",
+    "prio": 0,
+    "repetir": "mensual"
+   }
+  },
+  {
+   "hoy": "2026-11-09",
+   "texto": "regar plantas cada semana el sábado",
+   "esperado": {
+    "texto": "regar plantas",
+    "fecha": "2026-11-14",
+    "prio": 0,
+    "repetir": "semanal"
+   }
+  },
+  {
+   "hoy": "2026-11-09",
+   "texto": "examen 15/12 !!!",
+   "esperado": {
+    "texto": "examen",
+    "fecha": "2026-12-15",
+    "prio": 2,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-09",
+   "texto": "cita 31/02",
+   "esperado": {
+    "texto": "cita 31/02",
+    "fecha": null,
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-09",
+   "texto": "llamar a mamá por la mañana",
+   "esperado": {
+    "texto": "llamar a mamá por la mañana",
+    "fecha": null,
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-09",
+   "texto": "hoy: limpiar la habitación",
+   "esperado": {
+    "texto": "limpiar la habitación",
+    "fecha": "2026-11-09",
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-09",
+   "texto": "   ",
+   "esperado": null
+  },
+  {
+   "hoy": "2026-11-09",
+   "texto": "!!",
+   "esperado": null
+  },
+  {
+   "hoy": "2026-11-09",
+   "texto": "preparar el Miércoles la reunión",
+   "esperado": {
+    "texto": "preparar la reunión",
+    "fecha": "2026-11-11",
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-09",
+   "texto": "comprar billetes el domingo !",
+   "esperado": {
+    "texto": "comprar billetes",
+    "fecha": "2026-11-15",
+    "prio": 1,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-09",
+   "texto": "repasar 2/1/27",
+   "esperado": {
+    "texto": "repasar",
+    "fecha": "2027-01-02",
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-09",
+   "texto": "Mañana sacar la basura",
+   "esperado": {
+    "texto": "sacar la basura",
+    "fecha": "2026-11-10",
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-14",
+   "texto": "entregar informe viernes !!",
+   "esperado": {
+    "texto": "entregar informe",
+    "fecha": "2026-11-20",
+    "prio": 2,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-14",
+   "texto": "llamar al banco mañana",
+   "esperado": {
+    "texto": "llamar al banco",
+    "fecha": "2026-11-15",
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-14",
+   "texto": "comprar pan",
+   "esperado": {
+    "texto": "comprar pan",
+    "fecha": null,
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-14",
+   "texto": "estudiar redes pasado mañana !",
+   "esperado": {
+    "texto": "estudiar redes",
+    "fecha": "2026-11-16",
+    "prio": 1,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-14",
+   "texto": "gimnasio cada día",
+   "esperado": {
+    "texto": "gimnasio",
+    "fecha": "2026-11-14",
+    "prio": 0,
+    "repetir": "diaria"
+   }
+  },
+  {
+   "hoy": "2026-11-14",
+   "texto": "revisar correo entre semana",
+   "esperado": {
+    "texto": "revisar correo",
+    "fecha": "2026-11-16",
+    "prio": 0,
+    "repetir": "laborables"
+   }
+  },
+  {
+   "hoy": "2026-11-14",
+   "texto": "pagar alquiler cada mes",
+   "esperado": {
+    "texto": "pagar alquiler",
+    "fecha": "2026-11-14",
+    "prio": 0,
+    "repetir": "mensual"
+   }
+  },
+  {
+   "hoy": "2026-11-14",
+   "texto": "regar plantas cada semana el sábado",
+   "esperado": {
+    "texto": "regar plantas",
+    "fecha": "2026-11-21",
+    "prio": 0,
+    "repetir": "semanal"
+   }
+  },
+  {
+   "hoy": "2026-11-14",
+   "texto": "examen 15/12 !!!",
+   "esperado": {
+    "texto": "examen",
+    "fecha": "2026-12-15",
+    "prio": 2,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-14",
+   "texto": "cita 31/02",
+   "esperado": {
+    "texto": "cita 31/02",
+    "fecha": null,
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-14",
+   "texto": "llamar a mamá por la mañana",
+   "esperado": {
+    "texto": "llamar a mamá por la mañana",
+    "fecha": null,
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-14",
+   "texto": "hoy: limpiar la habitación",
+   "esperado": {
+    "texto": "limpiar la habitación",
+    "fecha": "2026-11-14",
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-14",
+   "texto": "   ",
+   "esperado": null
+  },
+  {
+   "hoy": "2026-11-14",
+   "texto": "!!",
+   "esperado": null
+  },
+  {
+   "hoy": "2026-11-14",
+   "texto": "preparar el Miércoles la reunión",
+   "esperado": {
+    "texto": "preparar la reunión",
+    "fecha": "2026-11-18",
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-14",
+   "texto": "comprar billetes el domingo !",
+   "esperado": {
+    "texto": "comprar billetes",
+    "fecha": "2026-11-15",
+    "prio": 1,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-14",
+   "texto": "repasar 2/1/27",
+   "esperado": {
+    "texto": "repasar",
+    "fecha": "2027-01-02",
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-11-14",
+   "texto": "Mañana sacar la basura",
+   "esperado": {
+    "texto": "sacar la basura",
+    "fecha": "2026-11-15",
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-12-31",
+   "texto": "entregar informe viernes !!",
+   "esperado": {
+    "texto": "entregar informe",
+    "fecha": "2027-01-01",
+    "prio": 2,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-12-31",
+   "texto": "llamar al banco mañana",
+   "esperado": {
+    "texto": "llamar al banco",
+    "fecha": "2027-01-01",
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-12-31",
+   "texto": "comprar pan",
+   "esperado": {
+    "texto": "comprar pan",
+    "fecha": null,
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-12-31",
+   "texto": "estudiar redes pasado mañana !",
+   "esperado": {
+    "texto": "estudiar redes",
+    "fecha": "2027-01-02",
+    "prio": 1,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-12-31",
+   "texto": "gimnasio cada día",
+   "esperado": {
+    "texto": "gimnasio",
+    "fecha": "2026-12-31",
+    "prio": 0,
+    "repetir": "diaria"
+   }
+  },
+  {
+   "hoy": "2026-12-31",
+   "texto": "revisar correo entre semana",
+   "esperado": {
+    "texto": "revisar correo",
+    "fecha": "2026-12-31",
+    "prio": 0,
+    "repetir": "laborables"
+   }
+  },
+  {
+   "hoy": "2026-12-31",
+   "texto": "pagar alquiler cada mes",
+   "esperado": {
+    "texto": "pagar alquiler",
+    "fecha": "2026-12-31",
+    "prio": 0,
+    "repetir": "mensual"
+   }
+  },
+  {
+   "hoy": "2026-12-31",
+   "texto": "regar plantas cada semana el sábado",
+   "esperado": {
+    "texto": "regar plantas",
+    "fecha": "2027-01-02",
+    "prio": 0,
+    "repetir": "semanal"
+   }
+  },
+  {
+   "hoy": "2026-12-31",
+   "texto": "examen 15/12 !!!",
+   "esperado": {
+    "texto": "examen",
+    "fecha": "2027-12-15",
+    "prio": 2,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-12-31",
+   "texto": "cita 31/02",
+   "esperado": {
+    "texto": "cita 31/02",
+    "fecha": null,
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-12-31",
+   "texto": "llamar a mamá por la mañana",
+   "esperado": {
+    "texto": "llamar a mamá por la mañana",
+    "fecha": null,
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-12-31",
+   "texto": "hoy: limpiar la habitación",
+   "esperado": {
+    "texto": "limpiar la habitación",
+    "fecha": "2026-12-31",
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-12-31",
+   "texto": "   ",
+   "esperado": null
+  },
+  {
+   "hoy": "2026-12-31",
+   "texto": "!!",
+   "esperado": null
+  },
+  {
+   "hoy": "2026-12-31",
+   "texto": "preparar el Miércoles la reunión",
+   "esperado": {
+    "texto": "preparar la reunión",
+    "fecha": "2027-01-06",
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-12-31",
+   "texto": "comprar billetes el domingo !",
+   "esperado": {
+    "texto": "comprar billetes",
+    "fecha": "2027-01-03",
+    "prio": 1,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-12-31",
+   "texto": "repasar 2/1/27",
+   "esperado": {
+    "texto": "repasar",
+    "fecha": "2027-01-02",
+    "prio": 0,
+    "repetir": null
+   }
+  },
+  {
+   "hoy": "2026-12-31",
+   "texto": "Mañana sacar la basura",
+   "esperado": {
+    "texto": "sacar la basura",
+    "fecha": "2027-01-01",
+    "prio": 0,
+    "repetir": null
+   }
+  }
+ ],
+ "tareas_orden": [
+  {
+   "hoy": "2026-11-09",
+   "lista": [
+    {
+     "id": 1,
+     "texto": "a",
+     "hecha": false,
+     "fecha": "2026-11-05",
+     "prio": 0
+    },
+    {
+     "id": 2,
+     "texto": "b",
+     "hecha": false,
+     "fecha": "2026-11-09",
+     "prio": 2
+    },
+    {
+     "id": 3,
+     "texto": "c",
+     "hecha": false,
+     "fecha": "2026-11-09",
+     "prio": 0
+    },
+    {
+     "id": 4,
+     "texto": "d",
+     "hecha": false
+    },
+    {
+     "id": 5,
+     "texto": "e",
+     "hecha": true,
+     "fecha": "2026-11-01"
+    },
+    {
+     "id": 6,
+     "texto": "f",
+     "hecha": false,
+     "fecha": "2026-11-10",
+     "prio": 1,
+     "repetir": "semanal"
+    },
+    {
+     "id": 7,
+     "texto": "g",
+     "hecha": false,
+     "fecha": "2026-11-13"
+    },
+    {
+     "id": 8,
+     "texto": "h",
+     "hecha": false,
+     "fecha": "2026-12-25",
+     "prio": 1
+    },
+    {
+     "id": 9,
+     "texto": "i",
+     "hecha": false,
+     "fecha": "2026-11-07",
+     "prio": 2
+    }
+   ],
+   "orden": [
+    9,
+    1,
+    2,
+    3,
+    6,
+    7,
+    8,
+    4
+   ],
+   "etiquetas": {
+    "1": "Atrasada · 5/11",
+    "2": "Hoy",
+    "3": "Hoy",
+    "4": "",
+    "5": "Atrasada · 1/11",
+    "6": "Mañana · cada semana",
+    "7": "vie 13/11",
+    "8": "vie 25/12",
+    "9": "Atrasada · 7/11"
+   },
+   "resumen": [
+    "4 tareas para hoy · 2 atrasadas",
+    "!! i, a, !! b y 1 más"
+   ]
+  },
+  {
+   "hoy": "2026-11-14",
+   "lista": [
+    {
+     "id": 1,
+     "texto": "a",
+     "hecha": false,
+     "fecha": "2026-11-05",
+     "prio": 0
+    },
+    {
+     "id": 2,
+     "texto": "b",
+     "hecha": false,
+     "fecha": "2026-11-09",
+     "prio": 2
+    },
+    {
+     "id": 3,
+     "texto": "c",
+     "hecha": false,
+     "fecha": "2026-11-09",
+     "prio": 0
+    },
+    {
+     "id": 4,
+     "texto": "d",
+     "hecha": false
+    },
+    {
+     "id": 5,
+     "texto": "e",
+     "hecha": true,
+     "fecha": "2026-11-01"
+    },
+    {
+     "id": 6,
+     "texto": "f",
+     "hecha": false,
+     "fecha": "2026-11-10",
+     "prio": 1,
+     "repetir": "semanal"
+    },
+    {
+     "id": 7,
+     "texto": "g",
+     "hecha": false,
+     "fecha": "2026-11-13"
+    },
+    {
+     "id": 8,
+     "texto": "h",
+     "hecha": false,
+     "fecha": "2026-12-25",
+     "prio": 1
+    },
+    {
+     "id": 9,
+     "texto": "i",
+     "hecha": false,
+     "fecha": "2026-11-07",
+     "prio": 2
+    }
+   ],
+   "orden": [
+    9,
+    2,
+    6,
+    1,
+    3,
+    7,
+    8,
+    4
+   ],
+   "etiquetas": {
+    "1": "Atrasada · 5/11",
+    "2": "Atrasada · 9/11",
+    "3": "Atrasada · 9/11",
+    "4": "",
+    "5": "Atrasada · 1/11",
+    "6": "Atrasada · 10/11 · cada semana",
+    "7": "Atrasada · 13/11",
+    "8": "vie 25/12",
+    "9": "Atrasada · 7/11"
+   },
+   "resumen": [
+    "6 tareas para hoy · 6 atrasadas",
+    "!! i, !! b, ! f y 3 más"
+   ]
+  }
+ ],
+ "tareas_siguiente": [
+  {
+   "fecha": "2026-11-09",
+   "repetir": "diaria",
+   "hoy": "2026-11-09",
+   "esperado": "2026-11-10"
+  },
+  {
+   "fecha": "2026-11-02",
+   "repetir": "diaria",
+   "hoy": "2026-11-09",
+   "esperado": "2026-11-10"
+  },
+  {
+   "fecha": "2026-11-13",
+   "repetir": "laborables",
+   "hoy": "2026-11-13",
+   "esperado": "2026-11-16"
+  },
+  {
+   "fecha": "2026-11-14",
+   "repetir": "laborables",
+   "hoy": "2026-11-14",
+   "esperado": "2026-11-16"
+  },
+  {
+   "fecha": "2026-11-09",
+   "repetir": "semanal",
+   "hoy": "2026-11-09",
+   "esperado": "2026-11-16"
+  },
+  {
+   "fecha": "2026-10-01",
+   "repetir": "semanal",
+   "hoy": "2026-11-09",
+   "esperado": "2026-11-12"
+  },
+  {
+   "fecha": "2026-01-31",
+   "repetir": "mensual",
+   "hoy": "2026-01-31",
+   "esperado": "2026-02-28"
+  },
+  {
+   "fecha": "2026-12-15",
+   "repetir": "mensual",
+   "hoy": "2026-12-15",
+   "esperado": "2027-01-15"
+  },
+  {
+   "fecha": "2026-11-20",
+   "repetir": "semanal",
+   "hoy": "2026-11-09",
+   "esperado": "2026-11-27"
+  }
  ]
 }

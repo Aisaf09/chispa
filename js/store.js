@@ -2,6 +2,7 @@
 // Las formas de los datos son las mismas que usa Chispa en Windows (estado.json), para sincronizar en la fase 2.
 
 import * as A from "./agenda.js";
+import * as T from "./tareas.js";
 
 export const CHECKS = [["sueno", "Dormí 7 h o más"], ["ejercicio", "Ejercicio"], ["trabajo", "2 bloques de trabajo"],
                        ["comida", "Comí bien"], ["prioridades", "Prioridades de mañana"]];
@@ -16,11 +17,13 @@ export function nuevoEstado() {
     version: 1,
     checks: {},                                        // { "2026-10-02": ["sueno", ...] }
     rezos: {},                                         // { "2026-10-02": ["fajr", ...] }
-    tareas: [],                                        // { id, texto, hecha, creada, hecha_fecha }
+    tareas: [],                                        // { id, texto, hecha, creada, hecha_fecha, fecha?, prio?, repetir? }
     foco: {},                                          // { "2026-10-02": segundos de foco }
     tasbih: { fecha: "", ciclo: 0, total: 0, meta: 33 },
     timer: { modo: "foco", corre: false, fin: 0, resta: POMO.foco, tramo: 0 },
-    agenda: [],                                        // recordatorios: { id, texto, fecha|null, hora, dias[] }
+    agenda: [],                                        // recordatorios: { id, texto, fecha|null, hora, dias[], antes?[] }
+    cuidado: {},                                       // { "2026-11-09": ["m_dientes", ...] } rutina de cuidado marcada
+    avisos_ya: [],                                     // claves de avisos de tareas / cuidado ya dados (solo este teléfono)
     habitos_dia: {},                                   // { "2026-10-08": [["sueno","…"], …] } los 5 hábitos elegidos ese día
     alertas: [],                                       // avisos pendientes de leer: { id, texto, cuando, k }
     ultimo_chequeo: 0,                                 // ms: hasta cuándo se han revisado los recordatorios
@@ -34,7 +37,8 @@ export function migrar(e) {                            // rellena lo que falte s
   r.tasbih = { ...base.tasbih, ...(e.tasbih || {}) };
   r.timer = { ...base.timer, ...(e.timer || {}) };
   r.ajustes = { ...base.ajustes, ...(e.ajustes || {}) };
-  for (const k of ["agenda", "alertas"]) if (!Array.isArray(r[k])) r[k] = [];
+  for (const k of ["agenda", "alertas", "avisos_ya"]) if (!Array.isArray(r[k])) r[k] = [];
+  if (!r.cuidado || typeof r.cuidado !== "object" || Array.isArray(r.cuidado)) r.cuidado = {};
   if (!r.habitos_dia || typeof r.habitos_dia !== "object") r.habitos_dia = {};
   return r;
 }
@@ -102,22 +106,45 @@ export function añadirRecordatorio(e, texto, ahora = new Date()) {
 }
 export const borrarRecordatorio = (e, id) => { e.agenda = e.agenda.filter((r) => r.id !== id); };
 
+/** Evento creado desde el calendario (ya validado, formato {texto, fecha, hora, dias}). Con `id` lo modifica. */
+export function guardarEvento(e, r, id = null) {
+  if (id != null) {
+    const x = e.agenda.find((y) => y.id === id);
+    if (!x) return null;
+    Object.assign(x, { texto: r.texto, fecha: r.fecha, hora: r.hora, dias: r.dias, antes: r.antes || [] });
+    return x;
+  }
+  const nuevo = { id: Math.max(0, ...e.agenda.map((x) => x.id || 0)) + 1, texto: r.texto, fecha: r.fecha, hora: r.hora, dias: r.dias, antes: r.antes || [] };
+  e.agenda.push(nuevo);
+  return nuevo;
+}
+
 /** Convierte en avisos lo que ha sonado desde la última revisión (en directo, o con la app cerrada, hasta 24 h).
  *  Los recordatorios de una sola vez se quitan de la agenda al convertirse en aviso. Devuelve cuántos avisos nuevos. */
 export function procesarAvisos(e, ahora = Date.now()) {
   const desde = e.ultimo_chequeo || ahora;
   let nuevos = 0;
+  for (const { r, cuando, aviso, antes } of A.ocurridosAntes(e.agenda, desde, ahora)) {          // avisos previos
+    if (añadirAlerta(e, { texto: r.texto, titulo: A.textoAntes(antes), cuando: aviso.getTime(), k: `${r.id}|${cuando.getTime()}|-${antes}`, tipo: "previo", evento: cuando.getTime() })) nuevos++;
+  }
   for (const { r, cuando } of A.ocurridos(e.agenda, desde, ahora)) {
-    const k = `${r.id}|${cuando.getTime()}`;
-    if (e.alertas.some((a) => a.k === k)) continue;
-    e.alertas.push({ id: Math.max(0, ...e.alertas.map((a) => a.id)) + 1, texto: r.texto, cuando: cuando.getTime(), k });
-    nuevos++;
+    if (añadirAlerta(e, { texto: r.texto, cuando: cuando.getTime(), k: `${r.id}|${cuando.getTime()}` })) nuevos++;
     if (!(r.dias && r.dias.length)) e.agenda = e.agenda.filter((x) => x.id !== r.id);
   }
   e.ultimo_chequeo = ahora;
   return nuevos;
 }
+/** Añade un aviso a la lista (si no estaba ya, por su clave `k`). Devuelve true si es nuevo. */
+export function añadirAlerta(e, a) {
+  if (e.alertas.some((x) => x.k === a.k)) return false;
+  e.alertas.push({ id: Math.max(0, ...e.alertas.map((x) => x.id)) + 1, ...a });
+  if (e.alertas.length > 30) e.alertas = e.alertas.slice(-30);
+  return true;
+}
 export const descartarAviso = (e, id) => { e.alertas = e.alertas.filter((a) => a.id !== id); };
+/** Minutos que faltan para mañana a las 09:00 (para «Mañana» en los avisos). */
+export const minHastaMañana = (ahora = new Date()) =>
+  Math.max(1, Math.round((new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() + 1, 9, 0) - ahora) / 60000));
 /** «+10 min»: el aviso se quita y vuelve a sonar dentro de `min` minutos como recordatorio de una sola vez. */
 export function posponerAviso(e, id, min = 10, ahora = new Date()) {
   const a = e.alertas.find((x) => x.id === id);
@@ -131,18 +158,26 @@ export function posponerAviso(e, id, min = 10, ahora = new Date()) {
 }
 
 // ---------- tareas ----------
-export function añadirTarea(e, texto, hoy = iso()) {
-  texto = (texto || "").trim();
-  if (!texto) return null;
-  const t = { id: Math.max(0, ...e.tareas.map((x) => x.id)) + 1, texto, hecha: false, creada: hoy, hecha_fecha: null };
+/** «entregar informe viernes !!» → tarea con fecha y prioridad (ver tareas.js). `extra` fuerza fecha/prio/repetir. */
+const comoFecha = (d) => (typeof d === "string" ? new Date(...d.split("-").map((x, i) => Number(x) - (i === 1 ? 1 : 0))) : d);
+export function añadirTarea(e, texto, ahora = new Date(), extra = {}) {
+  ahora = comoFecha(ahora);
+  const p = T.parsear(texto, ahora);
+  if (!p) return null;
+  const t = { id: Math.max(0, ...e.tareas.map((x) => x.id)) + 1, texto: p.texto, hecha: false, creada: iso(ahora), hecha_fecha: null,
+    fecha: p.fecha, prio: p.prio, repetir: p.repetir, ...extra };
   e.tareas.push(t);
   return t;
 }
-export function alternarTarea(e, id, hoy = iso()) {
+/** Marca / desmarca. Devuelve "hecha", "pendiente" o "repetida" (pasó a su siguiente fecha). */
+export function alternarTarea(e, id, ahora = new Date()) {
   const t = e.tareas.find((x) => x.id === id);
-  if (!t) return;
-  t.hecha = !t.hecha;
-  t.hecha_fecha = t.hecha ? hoy : null;
+  return t ? T.completar(t, comoFecha(ahora)) : null;
+}
+export function editarTarea(e, id, cambios) {
+  const t = e.tareas.find((x) => x.id === id);
+  if (t) Object.assign(t, cambios);
+  return t;
 }
 export const borrarTarea = (e, id) => { e.tareas = e.tareas.filter((x) => x.id !== id); };
 
