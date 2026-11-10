@@ -92,45 +92,53 @@ function vistaHoy() {
   const fecha = ahora.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" });
   const evHoy = C.eventosDia(E.agenda, Y.entregas(), hoyD()).filter((e) => e.cuando > ahora - 3600000);
   const hechos = S.progresoDia(E, hoy, ahora), total = S.totalDia(E, hoy, ahora), racha = S.racha(E);
-  const ent = Y.entregas().filter((e) => e.start > ahora.getTime() - 3600000).sort((a, b) => a.start - b.start).slice(0, 3);
-  const t = E.timer;
+  const ent = Y.entregas().filter((e) => e.start > ahora.getTime() && e.start - ahora.getTime() < 3 * 86400000).sort((a, b) => a.start - b.start);
+  const t = E.timer, cui = Y.cuidado(), mCui = cuiMomento || K.momentoActual(ahora), pasosCui = cui.rutina[mCui];
+  const hechosCui = pasosCui.filter((p) => (E.cuidado[hoy] || []).includes(p[0])).length;
+  const nHab = habitos.filter(([id]) => chk.has(id)).length;
+  // «Ahora»: el próximo rezo y, debajo, lo siguiente del calendario de hoy y la entrega más cercana
+  const sigEv = evHoy.find((e) => e.cuando > ahora && e.tipo !== "entrega");
+  const lineas = [
+    sigEv && `<div class="ah-l" style="--c:${COLOR_TIPO[sigEv.tipo]}"><i></i><b>${esc(sigEv.texto)}</b><span>${hhmm(sigEv.cuando)}</span></div>`,
+    ent[0] && `<div class="ah-l" style="--c:var(--rojo)"><i></i><b>${esc(ent[0].titulo)}</b><span>${esc(A.etiquetaCuando(new Date(ent[0].start), ahora))}</span></div>`,
+  ].filter(Boolean).join("") || `<div class="ah-nada">Nada más en el calendario hoy</div>`;
+  const anillo = (frac, color, n, total, nombre, accion) => `<button class="anillo" ${accion}><span class="a-aro">${aro(frac, 58, 7, color)}<b>${n}<small>/${total}</small></b></span><span class="a-nom">${nombre}</span></button>`;
+  // sin elegir: Cuidado cuando toca la rutina (7-10 h y desde las 21 h) si queda algo; si no, Hábitos
+  const horaCui = ahora.getHours() >= 7 && ahora.getHours() < 10 || ahora.getHours() >= 21;
+  const seg = (hoySeg || (horaCui && hechosCui < pasosCui.length ? "cuidado" : "habitos")) === "cuidado" && pasosCui.length ? "cuidado" : "habitos";
   return nav("Hoy", "", btnNav("tab:ajustes", ico("ajustes"), " redondo")) +
     `<div class="cab"><div class="fecha">${esc(fecha)}</div><h1>Hoy</h1></div>
-    <div class="widgets">
-      <div class="widget ancho w-rezo${sol.noche ? "" : " dia"}"><div class="et">${ico(sol.noche ? "luna" : "hoy")}Siguiente</div>
-        <div class="hora">${prox ? hhmm(prox.cuando) : ""}</div>
-        <div class="nom" style="margin-top:14px">${prox ? esc(R.NOMBRES[prox.id]) : "—"}</div>
-        <div class="cuenta" data-cuenta="${prox ? prox.cuando.getTime() : 0}" data-pre="en "></div></div>
-      <button class="widget w-agenda" data-a="tab" data-id="calendario"><div class="et">${esc(ahora.toLocaleDateString("es-ES", { weekday: "long" }))}</div>
-        <div class="dia">${ahora.getDate()}</div>
-        ${evHoy.length ? evHoy.slice(0, 2).map((e) => `<div class="ev" style="--c:${COLOR_TIPO[e.tipo]}"><i></i><div style="min-width:0"><b>${esc(e.texto)}</b><span>${hhmm(e.cuando)}</span></div></div>`).join("")
-          + (evHoy.length > 2 ? `<div class="nada" style="margin-top:6px">+${evHoy.length - 2} más</div>` : "")
-          : `<div class="nada">Nada más hoy</div>`}</button>
-      <div class="widget w-racha"><div class="et">${ico("llama")}Racha</div>
-        <div class="aros">${aro(hechos / total, 96, 11, "var(--naranja)")}<div class="n"><div><b>${racha}</b><span>${racha === 1 ? "día" : "días"}</span></div></div></div>
-        <div class="sub" style="font-size:13px;margin-top:6px;align-self:center">${hechos} de ${total} hoy</div></div>
-      <button class="widget ancho w-foco${t.corre ? " corre" : ""}" data-a="tab" data-id="foco" style="flex-direction:row;align-items:center;justify-content:space-between">
-        <div><div class="et">${ico("foco", 1)}Foco</div><div class="sub" style="margin-top:4px">Hoy ${durTxt(E.foco[hoy] || 0)}</div></div>
-        <div class="t" id="mini-timer" style="margin:0">${mmss(S.restante(t))}</div></button>
+    <button class="ahora${sol.noche ? "" : " dia"}" data-a="tab" data-id="calendario">
+      <div class="ah-cab"><span class="et">${ico(sol.noche ? "luna" : "hoy")}Ahora</span><span class="ah-hora">${prox ? hhmm(prox.cuando) : ""}</span></div>
+      <div class="ah-rezo">${prox ? esc(R.NOMBRES[prox.id]) : "—"} <span data-cuenta="${prox ? prox.cuando.getTime() : 0}" data-pre="en "></span></div>
+      <div class="ah-lineas">${lineas}</div></button>
+    <div class="anillos">
+      ${anillo(rez.size / 5, "var(--verde)", rez.size, 5, "Rezos", "")}
+      ${anillo(nHab / habitos.length, "var(--naranja)", nHab, habitos.length, "Hábitos", 'data-a="hoy-seg" data-id="habitos"')}
+      ${pasosCui.length ? anillo(hechosCui / pasosCui.length, "var(--rosa)", hechosCui, pasosCui.length, "Cuidado", 'data-a="hoy-seg" data-id="cuidado"') : ""}
+      <div class="racha">${ico("llama")}<b>${racha}</b><span>${racha === 1 ? "día" : "días"} de racha</span></div>
     </div>
+    ${t.corre ? `<button class="foco-chip" data-a="tab" data-id="foco">${ico("foco", 1)}<span>Foco en marcha</span><b id="mini-timer">${mmss(S.restante(t))}</b></button>` : ""}
     <h2>Oraciones</h2>
     <div class="rezos">${R.REZOS.map((id) => `<button class="rezo${rez.has(id) ? " hecha" : ""}${sigRezo && sigRezo.id === id && !rez.has(id) ? " sig" : ""}" data-a="rezo" data-id="${id}" aria-pressed="${rez.has(id)}">
       <span class="n">${R.NOMBRES[id]}</span><span class="h">${h[id] ? hhmm(h[id]) : "--:--"}</span>${CHK}</button>`).join("")}</div>
     ${bloqueTareasHoy(ahora)}
-    <h2>Hábitos de hoy</h2><div class="grupo">${habitos.map(([id, txt]) => `<button class="fila chkf${chk.has(id) ? " hecha" : ""}" data-a="check" data-id="${id}" role="checkbox" aria-checked="${chk.has(id)}">
-      ${CHK}<span class="tx">${esc(txt)}</span></button>`).join("")}</div>
-    ${bloqueCuidado(ahora)}
-    ${ent.length ? `<h2>Entregas</h2><div class="grupo">${ent.map((e) => `<div class="fila icono">${cuadro("libro", "var(--rojo)")}<span class="tx">${esc(e.titulo)}</span>
-      <span class="val">${esc(A.etiquetaCuando(new Date(e.start), ahora))}</span></div>`).join("")}</div>` : ""}`;
+    <div class="segm segm-hoy" role="tablist"><button class="${seg === "habitos" ? "act" : ""}" data-a="hoy-seg" data-id="habitos" role="tab" aria-selected="${seg === "habitos"}">Hábitos · ${nHab}/${habitos.length}</button>
+      ${pasosCui.length ? `<button class="${seg === "cuidado" ? "act" : ""}" data-a="hoy-seg" data-id="cuidado" role="tab" aria-selected="${seg === "cuidado"}">Cuidado · ${hechosCui}/${pasosCui.length}</button>` : ""}</div>
+    ${seg === "habitos"
+      ? `<div class="grupo">${habitos.map(([id, txt]) => `<button class="fila chkf${chk.has(id) ? " hecha" : ""}" data-a="check" data-id="${id}" role="checkbox" aria-checked="${chk.has(id)}">
+      ${CHK}<span class="tx">${esc(txt)}</span></button>`).join("")}</div>`
+      : bloqueCuidado(ahora)}`;
 }
+let hoySeg = null;                                       // "habitos" | "cuidado" (null = según la hora)
 
 /** «Tareas de hoy» en Hoy: atrasadas y de hoy, lo más urgente primero. */
 function bloqueTareasHoy(ahora) {
   const lista = T.ordenar(E.tareas, ahora).filter((t) => ["atrasada", "hoy"].includes(T.grupo(t, ahora)));
-  if (!lista.length) return "";
-  return `<h2 class="h2-acc">Tareas de hoy<button class="btn-txt" data-a="tab" data-id="tareas">Ver todas</button></h2>
-    <div class="grupo">${lista.slice(0, 5).map((t) => filaTarea(t, ahora)).join("")}
-    ${lista.length > 5 ? `<button class="fila accion" data-a="tab" data-id="tareas"><span class="tx">+${lista.length - 5} más</span>${ico("chevron", 0, "chev")}</button>` : ""}</div>`;
+  const cab = `<h2 class="h2-acc">Tareas${lista.length ? `<span class="h2-val">${lista.length} para hoy</span>` : ""}<button class="btn-txt" data-a="tab" data-id="tareas">Ver todas</button></h2>`;
+  if (!lista.length) return cab + `<div class="grupo"><button class="fila accion" data-a="tarea-nueva"><span class="tx">Nada pendiente hoy · Añadir tarea</span>${ico("mas", 0, "chev")}</button></div>`;
+  return cab + `<div class="grupo">${lista.slice(0, 3).map((t) => filaTarea(t, ahora)).join("")}
+    ${lista.length > 3 ? `<button class="fila accion" data-a="tab" data-id="tareas"><span class="tx">${lista.length - 3} más</span>${ico("chevron", 0, "chev")}</button>` : ""}</div>`;
 }
 
 // ---------- Cuidado (rutina de mañana y de noche) ----------
@@ -139,9 +147,8 @@ function bloqueCuidado(ahora) {
   const { rutina } = Y.cuidado(), m = cuiMomento || K.momentoActual(ahora), hoy = S.iso(ahora);
   const hechos = (E.cuidado[hoy] || []), pasos = rutina[m];
   if (!pasos.length) return "";
-  const n = pasos.filter((p) => hechos.includes(p[0])).length, otro = m === "manana" ? "noche" : "manana";
-  return `<h2 class="h2-acc">Cuidado · ${K.TITULOS[m]}<span class="h2-val">${n}/${pasos.length}</span><button class="btn-txt" data-a="cui-momento" data-id="${otro}">${K.TITULOS[otro]}</button></h2>
-    <div class="grupo">${pasos.map(([id, txt, , color]) => `<button class="fila chkf cui${hechos.includes(id) ? " hecha" : ""}" data-a="cui" data-id="${id}" role="checkbox" aria-checked="${hechos.includes(id)}" style="--cui:${K.COLORES[color] || "var(--acento)"}">
+  const otro = m === "manana" ? "noche" : "manana";
+  return `<div class="grupo"><div class="fila cui-cab"><span class="tx">Rutina de ${K.TITULOS[m].toLowerCase()}</span><button class="btn-txt" data-a="cui-momento" data-id="${otro}">Ver ${K.TITULOS[otro].toLowerCase()}</button></div>${pasos.map(([id, txt, , color]) => `<button class="fila chkf cui${hechos.includes(id) ? " hecha" : ""}" data-a="cui" data-id="${id}" role="checkbox" aria-checked="${hechos.includes(id)}" style="--cui:${K.COLORES[color] || "var(--acento)"}">
       ${CHK}<span class="tx">${esc(txt)}</span><i class="cui-pt"></i></button>`).join("")}</div>`;
 }
 
@@ -289,17 +296,33 @@ function abrirHojaTarea(id = null) {
 function vistaFe() {
   const ahora = new Date(), h = R.horariosDe(ahora, cfg()), prox = R.proximo(ahora, cfg());
   const sol = R.posicionSol(ahora, cfg()), t = S.tasbih(E), q = R.qibla(E.ajustes.lat, E.ajustes.lon);
-  const km = Math.round(q.km).toLocaleString("es-ES");
-  const sol1 = sol.desde ? `${sol.noche ? "Maghrib" : "Shuruq"} ${hhmm(sol.desde)}` : "", sol2 = sol.hasta ? `${sol.noche ? "Shuruq" : "Maghrib"} ${hhmm(sol.hasta)}` : "";
   return nav("Fe") + `<div class="cab"><h1>Fe</h1><p class="sub">${E.ajustes.gps ? "Ubicación del iPhone" : "Ubicación manual"}</p></div>
-    <div class="grupo caja" style="margin-top:10px">${arcoSol(sol.frac, sol.noche)}<div class="sol-pie"><span>${sol1}</span><span data-cuenta="${sol.hasta ? sol.hasta.getTime() : 0}" data-pre="${sol.noche ? "Shuruq" : "Maghrib"} en "></span><span>${sol2}</span></div></div>
+    ${prox ? `<div class="ahora fe-prox${sol.noche ? "" : " dia"}"><div class="ah-cab"><span class="et">${ico(sol.noche ? "luna" : "hoy")}Siguiente</span><span class="ah-hora">${hhmm(prox.cuando)}</span></div>
+      <div class="ah-rezo">${esc(R.NOMBRES[prox.id])} <span data-cuenta="${prox.cuando.getTime()}" data-pre="en "></span></div></div>` : ""}
     <h2>Horarios de hoy</h2><div class="grupo horario">${R.SALAT.map(([id, n]) => `<div class="fila${prox && prox.id === id ? " sig" : h[id] && h[id] < ahora ? " pasado" : ""}"><span class="tx">${n}</span><span class="val">${h[id] ? hhmm(h[id]) : "--:--"}</span></div>`).join("")}</div>
-    <h2>Qibla</h2><div class="grupo brujula">${brujulaSvg(q.rumbo)}
-      <div class="estado-bru" id="bru-estado">${Math.round(q.rumbo)}° ${R.puntoCardinal(q.rumbo)} · ${km} km</div>
-      <button class="btn peq" data-a="brujula">${orient.activa ? "Brújula activada" : "Activar la brújula"}</button></div>
+    <div class="grupo" style="margin-top:14px"><button class="fila icono" data-a="qibla">${cuadro("ubicacion", "var(--verde)")}<span class="tx">Brújula Qibla<small>${Math.round(q.rumbo)}° ${R.puntoCardinal(q.rumbo)} · sol y luna</small></span>${ico("chevron", 0, "chev")}</button></div>
     <h2>Tasbih</h2><div class="grupo tasbih"><button class="aro" data-a="tasbih" aria-label="Sumar una repetición">${aro(t.ciclo / t.meta, 150, 10, "var(--naranja)", "tas-aro")}<div class="n"><div><span id="tas-n">${t.ciclo}</span><small>de ${t.meta}</small></div></div></button>
       <div><div class="sub" style="font-size:13px">Hoy</div><div class="total" id="tas-total">${t.total}</div>
         <div class="fila-btn" style="margin-top:10px"><button class="btn peq" data-a="tasbih-meta">Meta ${t.meta}</button><button class="btn peq" data-a="tasbih-reset">Reiniciar</button></div></div></div>`;
+}
+
+// ---------- hoja «Brújula Qibla» (con el arco del sol) ----------
+function abrirHojaQibla() {
+  hoja.id = null; hoja.tipo = "qibla"; hojaTurno++;
+  const ahora = new Date(), sol = R.posicionSol(ahora, cfg()), q = R.qibla(E.ajustes.lat, E.ajustes.lon);
+  const km = Math.round(q.km).toLocaleString("es-ES");
+  const sol1 = sol.desde ? `${sol.noche ? "Maghrib" : "Shuruq"} ${hhmm(sol.desde)}` : "", sol2 = sol.hasta ? `${sol.noche ? "Shuruq" : "Maghrib"} ${hhmm(sol.hasta)}` : "";
+  $("#hoja").innerHTML = `<div class="velo" data-a="hoja-cerrar"></div>
+    <div class="panel" role="dialog" aria-modal="true" aria-label="Brújula Qibla">
+      <div class="hoja-cab"><span></span><b>Qibla</b><button type="button" class="btn-nav der" data-a="hoja-cerrar">Listo</button></div>
+      <div class="grupo brujula">${brujulaSvg(q.rumbo)}
+        <div class="estado-bru" id="bru-estado">${Math.round(q.rumbo)}° ${R.puntoCardinal(q.rumbo)} · ${km} km</div>
+        <button class="btn peq" data-a="brujula">${orient.activa ? "Brújula activada" : "Activar la brújula"}</button></div>
+      <h2>${sol.noche ? "Luna" : "Sol"}</h2>
+      <div class="grupo caja">${arcoSol(sol.frac, sol.noche)}<div class="sol-pie"><span>${sol1}</span><span data-cuenta="${sol.hasta ? sol.hasta.getTime() : 0}" data-pre="${sol.noche ? "Shuruq" : "Maghrib"} en "></span><span>${sol2}</span></div></div>
+      <p class="pie">Pon el iPhone en horizontal y gíralo hasta que la flecha apunte arriba.</p></div>`;
+  requestAnimationFrame(() => requestAnimationFrame(() => $("#hoja").classList.add("abierta")));
+  pintarBrujula();
 }
 
 // ---------- Foco ----------
@@ -424,7 +447,8 @@ async function activarBrujula() {
     orient.activa = true;
   }
   aviso("Brújula activada: gira el teléfono");
-  render();
+  for (const b of $$("[data-a=brujula]")) b.textContent = "Brújula activada";
+  pintarBrujula();
 }
 
 // ---------- ubicación ----------
@@ -522,6 +546,8 @@ function accion(a, id, el) {
     case "tarea-nueva": abrirHojaTarea(null); return;
     case "cui": K.alternar(E, id, S.iso()); navigator.vibrate?.(8); break;
     case "cui-momento": cuiMomento = id; render(); return;
+    case "hoy-seg": hoySeg = id; render(); return;
+    case "qibla": abrirHojaQibla(); return;
     case "cal-dia": {
       const d = C.aFecha(id);
       cal.sel = id;
@@ -561,7 +587,7 @@ function accion(a, id, el) {
     case "alerta-ver": {
       const a = E.alertas.find((x) => x.id === Number(id));
       S.descartarAviso(E, Number(id));
-      if (a && a.tipo === "cuidado") { cuiMomento = a.momento || null; tab = "hoy"; } else tab = "tareas";
+      if (a && a.tipo === "cuidado") { cuiMomento = a.momento || null; hoySeg = "cuidado"; tab = "hoy"; } else tab = "tareas";
       window.scrollTo(0, 0); break;
     }
     case "avisos-permiso":

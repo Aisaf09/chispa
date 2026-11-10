@@ -1,5 +1,5 @@
 // Service worker: deja la app disponible sin conexión (cache de los archivos propios) y se actualiza sola.
-const VERSION = "chispa-v5";
+const VERSION = "chispa-v6";
 const ARCHIVOS = ["./", "index.html", "manifest.webmanifest", "css/app.css", "js/app.js", "js/rezos.js", "js/store.js", "js/agenda.js", "js/sync.js", "config.js",
                   "js/calendario.js", "js/iconos.js", "js/tareas.js", "js/cuidado.js",
                   "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png"];

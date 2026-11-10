@@ -330,4 +330,149 @@ button.widget:active { transform: scale(.98); }
 .alerta .acc { display: flex; gap: 6px; margin-top: 10px; }
 .alerta .acc .btn { flex: 1; height: 36px; border-radius: 12px; font-size: 15px; padding: 0 4px; white-space: nowrap; min-width: 0; }
 
+/* =====================================================================================================
+   LIQUID GLASS (v24): fondo con color difuso detrás y superficies de cristal translúcido con canto de luz.
+   Va al final para mandar sobre lo anterior; para volver al estilo plano basta con quitar este bloque.
+   ===================================================================================================== */
+:root {
+  --vidrio: rgba(255, 255, 255, .58); --vidrio2: rgba(255, 255, 255, .38); --vidrio-act: rgba(255, 255, 255, .85);
+  --canto: rgba(255, 255, 255, .9); --canto2: rgba(255, 255, 255, .35); --borde-v: rgba(0, 0, 0, .06);
+  --blur: saturate(180%) blur(22px);
+  --sombra-v: 0 1px 1px rgba(0, 0, 0, .03), 0 10px 30px rgba(30, 20, 60, .08);
+  --radio: 22px;
+  --mancha1: rgba(255, 149, 0, .28); --mancha2: rgba(88, 86, 214, .22); --mancha3: rgba(255, 45, 85, .16);
+  --fondo: #eef0f6;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --vidrio: rgba(44, 44, 50, .52); --vidrio2: rgba(60, 60, 68, .38); --vidrio-act: rgba(120, 120, 130, .42);
+    --canto: rgba(255, 255, 255, .16); --canto2: rgba(255, 255, 255, .05); --borde-v: rgba(255, 255, 255, .07);
+    --sombra-v: 0 10px 30px rgba(0, 0, 0, .35);
+    --mancha1: rgba(255, 140, 0, .20); --mancha2: rgba(94, 92, 230, .26); --mancha3: rgba(255, 55, 95, .12);
+    --fondo: #050508; --barra: rgba(30, 30, 34, .55);
+  }
+}
+html { background: var(--fondo); }
+body { background: transparent; }
+body::before { content: ""; position: fixed; inset: -10%; z-index: -1; pointer-events: none;
+  background: radial-gradient(40% 32% at 12% 6%, var(--mancha1), transparent 70%),
+              radial-gradient(45% 35% at 95% 30%, var(--mancha2), transparent 70%),
+              radial-gradient(40% 30% at 20% 85%, var(--mancha3), transparent 70%), var(--fondo); }
+
+/* superficies de cristal */
+.grupo, .rezo, .anillos, .foco-chip, .segm, .buscador, #tabs, .alerta, #toast, .btn, .btn-nav.redondo, .redondo-g.gris, .dias-elegir button {
+  background: var(--vidrio); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+  border: .5px solid var(--borde-v); box-shadow: inset 0 1px 0 var(--canto), inset 0 -1px 0 var(--canto2), var(--sombra-v); }
+.grupo { border-radius: var(--radio); }
+.fila + .fila::after { border-top-color: var(--sep); opacity: .7; }
+button.fila:active, .fila.toca:active { background: var(--vidrio2); }
+
+/* títulos de sección: más claros, sin mayúsculas */
+h2 { text-transform: none; font-size: 20px; font-weight: 700; color: var(--texto); letter-spacing: .01em; margin: 26px 4px 10px; }
+h2.g-atrasada { color: var(--rojo); }
+.h2-val { font-size: 15px; font-weight: 500; color: var(--texto2); }
+.h2-acc .btn-txt { font-size: 15px; font-weight: 500; }
+.cab { padding-top: 40px; margin-bottom: 14px; }
+.pie { margin: 8px 6px 0; }
+
+/* botones tipo píldora */
+.btn { border-radius: 999px; color: var(--texto); font-weight: 600; }
+.btn.pri { background: linear-gradient(180deg, color-mix(in srgb, var(--acento) 88%, #fff), var(--acento)); color: #fff; border-color: transparent;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .45), 0 6px 18px color-mix(in srgb, var(--acento) 35%, transparent); }
+.btn.peq { border-radius: 999px; height: 36px; padding: 0 16px; }
+.btn-nav.redondo { width: 38px; height: 38px; border-radius: 50%; color: var(--texto); }
+.btn-nav:not(.redondo) { font-weight: 500; }
+.btn-txt { color: var(--acento); }
+
+/* barra superior al bajar: cristal */
+.encogido .nav { background: var(--barra); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); border-color: var(--borde-v); }
+
+/* barra de pestañas flotante en cápsula (iOS 26) */
+#tabs { left: 12px; right: 12px; bottom: calc(10px + var(--abajo)); max-width: 536px; border-radius: 32px; padding: 6px; gap: 2px; border-top: .5px solid var(--borde-v); }
+#tabs button { border-radius: 26px; padding: 6px 0 5px; transition: background .2s, color .2s; }
+#tabs button.act { background: var(--vidrio-act); box-shadow: inset 0 1px 0 var(--canto); }
+#tabs .ico { width: 25px; height: 25px; }
+#vista { padding-bottom: calc(118px + var(--abajo)); }
+
+/* control segmentado de cristal */
+.segm { border-radius: 999px; padding: 3px; margin: 26px 0 10px; }
+.segm button { height: 34px; border-radius: 999px; font-size: 14px; font-weight: 600; color: var(--texto2); transition: background .2s, color .2s; }
+.segm button.act { background: var(--vidrio-act); color: var(--texto); box-shadow: inset 0 1px 0 var(--canto), 0 2px 8px rgba(0, 0, 0, .10); }
+@media (prefers-color-scheme: dark) { .segm button.act { background: var(--vidrio-act); } }
+
+/* buscador / añadir rápido */
+.buscador { border-radius: 999px; height: 44px; padding: 0 14px; margin: 4px 0 14px; }
+.buscador input { height: 44px; }
+
+/* ---------- Hoy: tarjeta «Ahora» ---------- */
+.ahora { display: block; width: 100%; text-align: left; color: #fff; border-radius: 26px; padding: 16px 18px 14px; position: relative; overflow: hidden;
+  background: linear-gradient(150deg, rgba(92, 80, 240, .92), rgba(40, 34, 130, .92)); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 12px 32px rgba(60, 50, 180, .30); transition: transform .15s; }
+.ahora.dia { background: linear-gradient(150deg, rgba(255, 184, 70, .95), rgba(255, 112, 30, .95)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .45), 0 12px 32px rgba(255, 120, 30, .30); }
+.ahora::after { content: ""; position: absolute; inset: 0 0 55% 0; background: linear-gradient(180deg, rgba(255, 255, 255, .18), transparent); pointer-events: none; }
+button.ahora:active { transform: scale(.985); }
+.ah-cab { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; color: rgba(255, 255, 255, .85); }
+.ah-cab .et { display: flex; align-items: center; gap: 5px; }
+.ah-cab .ico { width: 15px; height: 15px; }
+.ah-hora { font-variant-numeric: tabular-nums; font-size: 15px; color: #fff; }
+.ah-rezo { font-family: var(--redonda); font-size: 30px; font-weight: 700; margin: 6px 0 2px; letter-spacing: 0; }
+.ah-rezo span { font-family: var(--fuente); font-size: 15px; font-weight: 600; color: rgba(255, 255, 255, .85); font-variant-numeric: tabular-nums; }
+.ah-lineas { margin-top: 10px; padding-top: 10px; border-top: .5px solid rgba(255, 255, 255, .28); display: grid; gap: 6px; }
+.ah-l { display: flex; align-items: center; gap: 8px; font-size: 15px; min-width: 0; }
+.ah-l i { flex: none; width: 4px; height: 16px; border-radius: 2px; background: #fff; opacity: .9; }
+.ah-l b { flex: 1; min-width: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ah-l span { flex: none; color: rgba(255, 255, 255, .85); font-variant-numeric: tabular-nums; }
+.ah-nada { font-size: 15px; color: rgba(255, 255, 255, .8); }
+.fe-prox { margin-bottom: 4px; }
+
+/* anillos de progreso */
+.anillos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; border-radius: var(--radio); padding: 14px 8px 12px; margin-top: 14px; }
+.anillo { display: grid; justify-items: center; gap: 6px; }
+.anillo:active { transform: scale(.96); }
+.a-aro { position: relative; width: 58px; height: 58px; display: grid; place-items: center; }
+.a-aro svg { position: absolute; inset: 0; width: 58px; height: 58px; }
+.a-aro b { font-family: var(--redonda); font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.a-aro b small { font-size: 11px; color: var(--texto2); font-weight: 600; }
+.a-nom { font-size: 13px; font-weight: 600; color: var(--texto2); }
+.racha { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 8px; padding-top: 10px; border-top: .5px solid var(--sep);
+  font-size: 13px; color: var(--texto2); }
+.racha .ico { width: 15px; height: 15px; color: var(--naranja); }
+.racha b { color: var(--texto); font-size: 15px; }
+.foco-chip { display: flex; align-items: center; gap: 8px; width: 100%; margin-top: 10px; padding: 10px 16px; border-radius: 999px; color: var(--menta); font-weight: 600; font-size: 15px; }
+.foco-chip .ico { width: 18px; height: 18px; }
+.foco-chip span { flex: 1; text-align: left; color: var(--texto); }
+.foco-chip b { font-variant-numeric: tabular-nums; }
+.segm-hoy { margin-top: 26px; }
+.cui-cab { min-height: 40px; }
+.cui-cab .tx { font-size: 15px; font-weight: 600; color: var(--texto2); }
+.cui-cab .btn-txt { font-size: 15px; }
+
+/* rezos: píldoras de cristal */
+.rezos { gap: 7px; }
+.rezo { border-radius: 18px; padding: 10px 2px 11px; }
+.rezo.sig { box-shadow: inset 0 0 0 1.5px var(--acento), inset 0 1px 0 var(--canto), var(--sombra-v); }
+.rezo.hecha { background: color-mix(in srgb, var(--verde) 16%, var(--vidrio)); }
+
+/* avisos y toast de cristal */
+.alerta { border-radius: 26px; padding: 12px 14px 12px; }
+.alerta .acc .btn { height: 34px; font-size: 14px; }
+#toast { border-radius: 999px; }
+
+/* hoja inferior: cristal grueso */
+#hoja .panel { background: color-mix(in srgb, var(--fondo) 72%, transparent); -webkit-backdrop-filter: saturate(180%) blur(40px); backdrop-filter: saturate(180%) blur(40px);
+  border-radius: 28px 28px 0 0; box-shadow: inset 0 1px 0 var(--canto); }
+@media (prefers-color-scheme: dark) { #hoja .panel { background: rgba(28, 28, 32, .72); } #hoja .grupo { background: var(--vidrio); } }
+.hoja-cab { background: transparent; }
+.fila input[type=date], .fila input[type=time] { border-radius: 10px; background: var(--vidrio2); }
+
+/* calendario y foco */
+.cal-dias, .cal-sem { border-bottom-color: transparent; }
+.cal-mes { background: var(--vidrio); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); border-radius: var(--radio);
+  border: .5px solid var(--borde-v); box-shadow: inset 0 1px 0 var(--canto), var(--sombra-v); padding: 4px 0; }
+.cal-sem { margin: 0; padding: 0 4px; }
+.cal-dias { margin: 0; padding: 4px 4px 8px; }
+.redondo-g::after { display: none; }
+.redondo-g.verde { background: color-mix(in srgb, var(--verde) 24%, var(--vidrio)); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); box-shadow: inset 0 1px 0 var(--canto), var(--sombra-v); }
+.redondo-g.naranja { background: color-mix(in srgb, var(--naranja) 24%, var(--vidrio)); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); box-shadow: inset 0 1px 0 var(--canto), var(--sombra-v); }
+
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
